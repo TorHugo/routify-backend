@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: routify_database_app
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres_data:/var/lib/postgresql/data
+    networks:
+      - routify-network
+
+  # backends
+networks:
+  routify-network:
+    driver: bridge
