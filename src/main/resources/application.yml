@@ -11,6 +11,22 @@ spring:
     basename: messages
     encoding: UTF-8
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${ROUTIFY_MAIL_USERNAME}
+    password: ${ROUTIFY_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        transport:
+          protocol: smtp
+        debug: true  # Útil para debug, pode remover em produção
+
   datasource:
     url: jdbc:postgresql://${DB_URI:localhost}:${DB_PORT:5432}/postgres
     username: ${DB_USERNAME:admin}

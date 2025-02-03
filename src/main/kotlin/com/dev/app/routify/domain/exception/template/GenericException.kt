@@ -2,4 +2,4 @@ package com.dev.app.routify.domain.exception.template
 
 import com.dev.app.routify.domain.exception.DomainExceptionHandler
 
-class GatewayException(message: String, parameter: String) : DomainExceptionHandler(message, parameter)
+class GenericException(message: String?) : DomainExceptionHandler(message)

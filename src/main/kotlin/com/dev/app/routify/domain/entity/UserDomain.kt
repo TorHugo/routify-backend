@@ -17,4 +17,8 @@ data class UserDomain(
     val confirmed: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime? = null
-) : Serializable, AggregateRoot<Long?>()
+) : Serializable, AggregateRoot<Long?>() {
+    fun fullName(): String {
+        return "${this.firstName} ${this.lastName}"
+    }
+}
