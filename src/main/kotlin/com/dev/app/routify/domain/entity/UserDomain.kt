@@ -14,11 +14,15 @@ data class UserDomain(
     val lastName: String? = null,
     val phoneNumber: String,
     val active: Boolean = true,
-    val confirmed: Boolean = false,
+    var confirmed: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime? = null
 ) : Serializable, AggregateRoot<Long?>() {
     fun fullName(): String {
         return "${this.firstName} ${this.lastName}"
+    }
+
+    fun confirmation() {
+        this.confirmed = true
     }
 }

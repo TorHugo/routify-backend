@@ -2,6 +2,7 @@ package com.dev.app.routify.domain.exception.enums
 
 enum class ErrorMessageEnum(val message: String) {
     // generic error
+    INTERNAL_SERVER_ERROR(message = "generic.error.internal"),
     ERROR_GENERIC(message = "generic.error.message"),
 
     // user error
@@ -20,5 +21,11 @@ enum class ErrorMessageEnum(val message: String) {
     // notification error
     ERROR_NOTIFICATION_STATUS_IS_NOT_VALID(message = "notification.status.is.not.valid"),
     ERROR_NOTIFICATION_TYPE_IS_NOT_VALID(message = "notification.type.is.not.valid"),
-    ERROR_NOTIFICATION_PARAMETERS_IS_NOT_NULL(message = "notification.parameters.cant.be.null")
+    ERROR_NOTIFICATION_PARAMETERS_IS_NOT_NULL(message = "notification.parameters.cant.be.null"),
+    ERROR_NOTIFICATION_EMAIL_NOT_FOUND(message = "notification.not.found"),
+    ERROR_NOTIFICATION_STATUS_IS_NOT_PENDING(message = "notification.status.not.pending"),
+
+    // hashcode error
+    ERROR_HASHCODE_DIFFERENT_TO_SENT_USER(message = "hashcode.different.to.sent.user"),
+    ERROR_HASHCODE_IS_EXPIRED(message = "hashcode.is.expired")
 }

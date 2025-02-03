@@ -1,5 +1,6 @@
 package com.dev.app.routify.domain.entity
 
+import com.dev.app.routify.domain.enums.StatusNotificationEnum
 import com.dev.app.routify.domain.objects.StatusNotification
 import com.dev.app.routify.domain.objects.TypeNotification
 import java.io.Serializable
@@ -9,11 +10,15 @@ data class NotificationDomain(
     override val identifier: Long? = null,
     val userId: Long,
     val toEmail: String? = null,
-    val status: StatusNotification,
+    var status: StatusNotification,
     val type: TypeNotification,
     val subject: String? = null,
     val message: String? = null,
     val parameters: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime? = null
-) : Serializable, AggregateRoot<Long?>()
+) : Serializable, AggregateRoot<Long?>() {
+    fun confirmation() {
+        this.status = StatusNotification(StatusNotificationEnum.CONFIRMED.value)
+    }
+}

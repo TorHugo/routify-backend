@@ -64,7 +64,7 @@ class ConfirmationCreatingAccountListener(
                 val notificationDomain = NotificationDomain(
                     userId = user.identifier!!,
                     toEmail = user.email.value,
-                    status = StatusNotification(DEFAULT_NOTIFICATION_STATUS.type),
+                    status = StatusNotification(DEFAULT_NOTIFICATION_STATUS.value),
                     type = TypeNotification(DEFAULT_NOTIFICATION_TYPE.type),
                     subject = subject,
                     message = body,

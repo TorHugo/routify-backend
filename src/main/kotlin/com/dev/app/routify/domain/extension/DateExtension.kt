@@ -10,3 +10,9 @@ fun LocalDateTime.toFormatted(
 ): String {
     return this.format(formatter)
 }
+
+fun String.toLocalDateTime(
+    formatter: DateTimeFormatter = DEFAULT_FORMATTER
+): LocalDateTime {
+    return LocalDateTime.parse(this, formatter)
+}

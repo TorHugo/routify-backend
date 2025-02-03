@@ -8,6 +8,7 @@ import com.dev.app.routify.infrastructure.repository.entity.UserEntity
 
 fun UserDomain.toEntity(): UserEntity {
     return UserEntity(
+        userId = this.identifier,
         externalId = this.externalId.value,
         email = this.email.value,
         password = this.password,

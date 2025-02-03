@@ -28,7 +28,7 @@ class CreateHashUseCase {
             logger.info("c=CreateHashUseCase m=execute() s=done identifier=$identifier")
             return hash
         } catch (ex: Exception) {
-            logger.error("c=CreateHashUseCase m=execute() s=error identifier=$identifier message=${ex.message}")
+            logger.error("c=CreateHashUseCase m=execute() s=error-generic identifier=$identifier message=${ex.message}")
             throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
         }
     }

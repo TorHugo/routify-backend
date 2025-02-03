@@ -2,6 +2,7 @@ package com.dev.app.routify.infrastructure.exception
 
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GatewayException
+import com.dev.app.routify.domain.exception.template.InternalServerException
 import com.dev.app.routify.domain.exception.template.InvalidArgumentException
 import com.dev.app.routify.domain.exception.template.RepositoryException
 import com.dev.app.routify.domain.exception.template.ServiceException
@@ -44,6 +45,20 @@ class GlobalExceptionHandler(
         return createErrorResponse(
             status = HttpStatus.CONFLICT,
             error = "Domain Error",
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(InternalServerException::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleDomainException(
+        ex: InternalServerException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.INTERNAL_SERVER_ERROR,
+            error = "Internal Error",
             message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
             path = request.requestURI
         )

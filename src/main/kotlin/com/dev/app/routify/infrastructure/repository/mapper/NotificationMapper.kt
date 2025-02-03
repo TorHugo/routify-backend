@@ -7,6 +7,7 @@ import com.dev.app.routify.infrastructure.repository.entity.NotificationEntity
 
 fun NotificationDomain.toEntity(): NotificationEntity {
     return NotificationEntity(
+        notificationId = this.identifier,
         userId = this.userId,
         type = this.type.value,
         status = this.status.value,
