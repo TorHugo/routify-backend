@@ -27,5 +27,15 @@ enum class ErrorMessageEnum(val message: String) {
 
     // hashcode error
     ERROR_HASHCODE_DIFFERENT_TO_SENT_USER(message = "hashcode.different.to.sent.user"),
-    ERROR_HASHCODE_IS_EXPIRED(message = "hashcode.is.expired")
+    ERROR_HASHCODE_IS_EXPIRED(message = "hashcode.is.expired"),
+
+    // authentication error
+    ERROR_AUTHENTICATION_USER_IS_NOT_ACTIVE(message = "authentication.user.is.not.active"),
+    ERROR_AUTHENTICATION_INVALID_ARGUMENTS(message = "authentication.invalid.arguments"),
+    ERROR_AUTHENTICATION_SCOPES_NOT_FOUND(message = "authentication.scopes.not.found"),
+    ERROR_AUTHENTICATION_ACCESS_DENIED(message = "authentication.access.denied"),
+    ERROR_AUTHENTICATION_BEARER_TOKEN_IS_NOT_EMPTY(message = "authentication.bearer.token.is.not.empty"),
+
+    // ScopeKeyEnum error
+    ERROR_SCOPE_KEY_NOT_FOUND(message = "scope.key.not.found")
 }

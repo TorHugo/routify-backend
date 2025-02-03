@@ -1,9 +1,11 @@
 package com.dev.app.routify.infrastructure.exception
 
+import com.dev.app.routify.domain.exception.template.AuthenticationException
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GatewayException
 import com.dev.app.routify.domain.exception.template.InternalServerException
 import com.dev.app.routify.domain.exception.template.InvalidArgumentException
+import com.dev.app.routify.domain.exception.template.JWTException
 import com.dev.app.routify.domain.exception.template.RepositoryException
 import com.dev.app.routify.domain.exception.template.ServiceException
 import com.dev.app.routify.infrastructure.api.models.response.DefaultResponseDTO
@@ -46,6 +48,34 @@ class GlobalExceptionHandler(
             status = HttpStatus.CONFLICT,
             error = "Domain Error",
             message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(AuthenticationException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleAuthenticationException(
+        ex: AuthenticationException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.UNAUTHORIZED,
+            error = "Unauthorized",
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(JWTException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleJWTException(
+        ex: JWTException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.UNAUTHORIZED,
+            error = "Unauthorized",
+            message = ex.message!!,
             path = request.requestURI
         )
     }
