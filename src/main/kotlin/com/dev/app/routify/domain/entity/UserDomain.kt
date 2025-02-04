@@ -9,7 +9,7 @@ data class UserDomain(
     override val identifier: Long? = null,
     val externalId: UUIDv4 = UUIDv4.generate(),
     val email: Email,
-    val password: String,
+    val password: String? = null,
     val firstName: String,
     val lastName: String? = null,
     val phoneNumber: String,

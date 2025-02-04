@@ -1,5 +1,7 @@
 package com.dev.app.routify.application.usecase
 
+import com.dev.app.routify.application.mapper.toApplicationDTO
+import com.dev.app.routify.application.models.HashDTO
 import com.dev.app.routify.domain.entity.HashDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
@@ -16,7 +18,7 @@ class CreateHashUseCase {
         private const val DEFAULT_EXPIRATION_MINUTES_TIME: Long = 15L
     }
 
-    fun execute(identifier: String): HashDomain {
+    fun execute(identifier: String): HashDTO {
         try {
             logger.info("c=CreateHashUseCase m=execute() s=start identifier=$identifier")
             val hash = HashDomain(
@@ -26,7 +28,7 @@ class CreateHashUseCase {
                 )
             )
             logger.info("c=CreateHashUseCase m=execute() s=done identifier=$identifier")
-            return hash
+            return hash.toApplicationDTO()
         } catch (ex: Exception) {
             logger.error("c=CreateHashUseCase m=execute() s=error-generic identifier=$identifier message=${ex.message}")
             throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)

@@ -1,6 +1,7 @@
 package com.dev.app.routify.application.usecase
 
-import com.dev.app.routify.domain.entity.UserDomain
+import com.dev.app.routify.application.mapper.toApplicationDTO
+import com.dev.app.routify.application.models.UserDTO
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.gateway.UserGateway
@@ -14,12 +15,12 @@ class FindUserUseCase(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    fun execute(email: String): UserDomain? {
+    fun execute(email: String): UserDTO? {
         try {
             logger.info("c=FindUserUseCase m=execute() s=start email=$email")
             val user = userGateway.findByEmail(email)
             logger.info("c=FindUserUseCase m=execute() s=done email=$email")
-            return user
+            return user.toApplicationDTO()
         } catch (ex: Exception) {
             logger.error("c=FindUserUseCase m=execute() s=generic-error email=$email message=${ex.message}")
             throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)

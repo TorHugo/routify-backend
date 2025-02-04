@@ -1,7 +1,7 @@
 package com.dev.app.routify.infrastructure.service
 
+import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.usecase.FindUserScopeUseCase
-import com.dev.app.routify.application.usecase.FindUserUseCase
 import com.dev.app.routify.domain.entity.AuthDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.AuthenticationException
@@ -9,6 +9,7 @@ import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.exception.template.JWTException
 import com.dev.app.routify.domain.extension.toFormatted
+import com.dev.app.routify.domain.gateway.UserGateway
 import com.dev.app.routify.domain.service.AuthService
 import com.dev.app.routify.infrastructure.security.JWTAuthToken
 import io.jsonwebtoken.ExpiredJwtException
@@ -23,10 +24,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthServiceImpl(
-    private val findUserUseCase: FindUserUseCase,
     private val findUserScopeUseCase: FindUserScopeUseCase,
     private val encoder: PasswordEncoder,
-    private val jwtAuthToken: JWTAuthToken
+    private val jwtAuthToken: JWTAuthToken,
+    private val userGateway: UserGateway
 ) : AuthService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -36,7 +37,7 @@ class AuthServiceImpl(
     ): AuthDomain {
         try {
             logger.info("c=AuthServiceImpl m=login() s=start email=$username")
-            val user = findUserUseCase.execute(email = username) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
+            val user = userGateway.findByEmail(email = username) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
             val isPasswordMatches = encoder.matches(
                 password,
                 user.password
@@ -80,12 +81,12 @@ class AuthServiceImpl(
                 token = token
             )
 
-            val user = findUserUseCase.execute(
+            val user = userGateway.findByEmail(
                 email = claims.subject
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
 
             val userScopes = findUserScopeUseCase.execute(
-                userDomain = user
+                dto = user.toApplicationDTO()!!
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_AUTHENTICATION_SCOPES_NOT_FOUND.message)
 
             val jwtToken = jwtAuthToken.generateTokenWithScopes(

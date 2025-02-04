@@ -3,7 +3,7 @@ package com.dev.app.routify.domain.entity
 import java.io.File
 import java.io.Serializable
 
-data class EmailDomain(
+data class SendingEmailDomain(
     val to: String? = null,
     val subject: String? = null,
     val body: String? = null,

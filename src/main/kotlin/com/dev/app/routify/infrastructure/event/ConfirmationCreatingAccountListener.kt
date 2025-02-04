@@ -1,5 +1,6 @@
 package com.dev.app.routify.infrastructure.event
 
+import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.usecase.CreateHashUseCase
 import com.dev.app.routify.application.usecase.CreateNotificationUseCase
 import com.dev.app.routify.application.usecase.SendNotificationEmailUseCase
@@ -50,8 +51,8 @@ class ConfirmationCreatingAccountListener(
 
                 val parameters = listOf(
                     Parameter(key = DEFAULT_KEY_FULL_NAME, value = dto.user.fullName()),
-                    Parameter(key = DEFAULT_KEY_HASH_CODE, value = hash.identifier.value),
-                    Parameter(key = DEFAULT_KEY_EXPIRATION_DATE, value = hash.expiration.value.toFormatted())
+                    Parameter(key = DEFAULT_KEY_HASH_CODE, value = hash.identifier),
+                    Parameter(key = DEFAULT_KEY_EXPIRATION_DATE, value = hash.expiration.toFormatted())
                 )
 
                 val mailTemplate = dto.template
@@ -69,11 +70,11 @@ class ConfirmationCreatingAccountListener(
                 )
 
                 notificationUseCase.execute(
-                    notificationDomain
+                    notificationDomain.toApplicationDTO()
                 )
 
                 createNotificationUseCase.execute(
-                    notificationDomain
+                    notificationDomain.toApplicationDTO()
                 )
                 logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=done email=${dto.user.email.value}")
             } catch (ex: DomainException) {

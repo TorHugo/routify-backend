@@ -21,7 +21,12 @@ class OAuthScopeInterceptor(
 ) : HandlerInterceptor {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
-        private val PUBLIC = arrayOf("/api/v1/auth/.*", "/api/error")
+        private val PUBLIC = arrayOf(
+            "/api/v1/auth/.*",
+            "/api/v1/users/create",
+            "/api/v1/users/confirm-email",
+            "/api/error"
+        )
 
         private const val DEFAULT_AUTHORIZATION_HEADER = "Authorization"
         private const val DEFAULT_AUTHORIZATION_HEADER_VALUE = "Bearer "

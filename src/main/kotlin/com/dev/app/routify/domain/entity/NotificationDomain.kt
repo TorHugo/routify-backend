@@ -15,7 +15,7 @@ data class NotificationDomain(
     val subject: String? = null,
     val message: String? = null,
     val parameters: String? = null,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val createdAt: LocalDateTime? = LocalDateTime.now(),
     val updatedAt: LocalDateTime? = null
 ) : Serializable, AggregateRoot<Long?>() {
     fun confirmation() {

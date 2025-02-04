@@ -14,7 +14,6 @@ spring:
 
   security:
     security-key: ${SECURITY_KEY:6c9c5acb3e09048b863a865d1b524c935b9cfe8c401a1d5396cd63749e02f89427d9543b31d9c0ea1e88089f8412932e2886b273d7bc7920bea814b847dc7ad1}
-    debug: true
 
   mail:
     host: smtp.gmail.com
@@ -39,8 +38,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      #ddl-auto: create-drop
-      ddl-auto: update
+      ddl-auto: create-drop
+      #ddl-auto: update
     properties:
       hibernate:
         jdbc:

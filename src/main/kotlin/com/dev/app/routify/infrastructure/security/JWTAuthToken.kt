@@ -1,7 +1,7 @@
 package com.dev.app.routify.infrastructure.security
 
+import com.dev.app.routify.application.models.UserScopeDTO
 import com.dev.app.routify.domain.entity.UserDomain
-import com.dev.app.routify.domain.entity.UserScopeDomain
 import com.dev.app.routify.domain.extension.expirationDate
 import com.dev.app.routify.infrastructure.security.models.BasicTokenDTO
 import io.jsonwebtoken.Claims
@@ -51,15 +51,15 @@ class JWTAuthToken {
         )
     }
 
-    fun generateTokenWithScopes(scopes: UserScopeDomain): BasicTokenDTO {
+    fun generateTokenWithScopes(scopes: UserScopeDTO): BasicTokenDTO {
         val user = scopes.user
         val currentDate = Date()
         val expirationDate = currentDate.expirationDate(DEFAULT_EXPIRATION_SCOPE_TOKEN_TIME)
 
         val basicToken = builder()
-            .subject(user.email.value)
-            .claim(DEFAULT_CLAIM_EMAIL, user.email.value)
-            .claim(DEFAULT_CLAIM_USER_EXTERNAL_ID, user.externalId.value)
+            .subject(user.email)
+            .claim(DEFAULT_CLAIM_EMAIL, user.email)
+            .claim(DEFAULT_CLAIM_USER_EXTERNAL_ID, user.externalId)
             .claim(DEFAULT_CLAIM_SCOPES, scopes.scopes)
             .issuedAt(currentDate)
             .expiration(expirationDate)

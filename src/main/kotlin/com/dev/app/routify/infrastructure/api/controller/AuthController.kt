@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService
 ) {
-    companion object {
-        private const val DEFAULT_HEADER_TOKEN: String = "Authorization"
-    }
-
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     fun login(
@@ -45,7 +41,7 @@ class AuthController(
     @PostMapping("/access-token")
     @ResponseStatus(HttpStatus.OK)
     fun accessToken(
-        @RequestHeader(DEFAULT_HEADER_TOKEN) token: String
+        @RequestHeader("Authorization") token: String
     ): DefaultResponseDTO<LoginResponseDTO> {
         val auth = authService.accessToken(
             token = token

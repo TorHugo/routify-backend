@@ -1,6 +1,6 @@
 package com.dev.app.routify.infrastructure.service
 
-import com.dev.app.routify.domain.entity.EmailDomain
+import com.dev.app.routify.domain.entity.SendingEmailDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.exception.template.ServiceException
@@ -22,7 +22,7 @@ class EmailServiceImpl(
         private const val DEFAULT_UTF: String = "UTF-8"
     }
 
-    override fun sendEmail(domain: EmailDomain) {
+    override fun sendEmail(domain: SendingEmailDomain) {
         try {
             logger.info("c=EmailServiceImpl m=sendEmail() s=start email=${domain.to}")
             val message = mailSender.createMimeMessage()
