@@ -22,7 +22,7 @@ class FindUserUseCase(
             return user
         } catch (ex: Exception) {
             logger.error("c=FindUserUseCase m=execute() s=generic-error email=$email message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

@@ -52,7 +52,7 @@ class EventServiceImpl(
             logger.info("c=EventService m=publish() s=done identifier=${entryEvent.identifier} eventType=${entryEvent.eventType}")
         } catch (e: Exception) {
             logger.error("c=EventService m=publish() s=error identifier=${entryEvent.identifier} eventType=${entryEvent.eventType} message=${e.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

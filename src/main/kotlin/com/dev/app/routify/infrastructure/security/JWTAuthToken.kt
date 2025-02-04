@@ -19,7 +19,7 @@ import javax.crypto.SecretKey
 @Service
 class JWTAuthToken {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
-    companion object{
+    companion object {
         private const val DEFAULT_EMPTY_VALUE: String = ""
         private const val DEFAULT_BEARER_TOKEN: String = "Bearer"
         private const val DEFAULT_BEARER_WITH_SPACE_TOKEN: String = "Bearer "
@@ -91,5 +91,4 @@ class JWTAuthToken {
 
     private fun getSigningKey(secret: String): SecretKey =
         Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
-
 }

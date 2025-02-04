@@ -7,4 +7,4 @@ data class AuthDomain(
     val token: String,
     val typeToken: String,
     val expirationTime: String
-): Serializable
+) : Serializable

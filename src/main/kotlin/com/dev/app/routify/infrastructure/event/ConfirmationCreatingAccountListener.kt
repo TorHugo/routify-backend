@@ -82,7 +82,7 @@ class ConfirmationCreatingAccountListener(
             } catch (ex: Exception) {
                 // should be retry
                 logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=error-generic email=${dto.user.email.value} message=${ex.message}")
-                throw GenericException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                throw GenericException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
             }
         }
     }

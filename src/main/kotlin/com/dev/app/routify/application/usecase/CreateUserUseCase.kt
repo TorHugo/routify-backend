@@ -72,7 +72,7 @@ class CreateUserUseCase(
             throw DomainException(ex.message)
         } catch (ex: Exception) {
             logger.error("c=CreateUserUseCase m=execute() s=generic-error email=${dto.email} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

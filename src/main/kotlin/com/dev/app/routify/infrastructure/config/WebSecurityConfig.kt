@@ -1,39 +1,23 @@
 package com.dev.app.routify.infrastructure.config
 
-import com.dev.app.routify.infrastructure.security.filter.OAuthScopeFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.web.SecurityFilterChain
-
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
-class WebSecurityConfig (
-    private val oAuthScopeFilter: OAuthScopeFilter
-) {
-    companion object {
-        private val PUBLIC = arrayOf("/v1/auth/**")
-    }
+class WebSecurityConfig {
 
     @Bean
-    @Throws(Exception::class)
-    fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
-        return httpSecurity
-            .cors { it.disable() }
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http
             .csrf { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests {
-                it
-                    .requestMatchers(*PUBLIC).permitAll()
-                    .anyRequest().authenticated()
+            .authorizeHttpRequests { authorize ->
+                authorize
+                    .anyRequest().permitAll()
             }
-            .addFilterBefore(oAuthScopeFilter, BearerTokenAuthenticationFilter::class.java)
-            .build()
+        return http.build()
     }
 }

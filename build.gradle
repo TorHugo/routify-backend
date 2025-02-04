@@ -43,15 +43,14 @@ dependencies {
 
     // security
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
     implementation("io.jsonwebtoken:jjwt:0.12.5")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // database
-    implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly 'org.postgresql:postgresql'
 

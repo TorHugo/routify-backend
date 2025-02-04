@@ -15,7 +15,7 @@ class CreateUserScopeUseCase(
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
-    fun execute(userId: Long, scopeId: String){
+    fun execute(userId: Long, scopeId: String) {
         try {
             logger.info("c=CreateUserScopeUseCase m=execute() s=start userId=$userId")
             userScopeGateway.save(
@@ -25,7 +25,7 @@ class CreateUserScopeUseCase(
             logger.info("c=CreateUserScopeUseCase m=execute() s=done userId=$userId")
         } catch (ex: Exception) {
             logger.error("c=CreateUserScopeUseCase m=execute() s=generic-error userId=$userId message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

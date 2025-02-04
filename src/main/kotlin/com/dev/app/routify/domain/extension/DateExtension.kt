@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-private const val DEFAULT_EXPIRATION_DATE_TIME: Int = 15
+private const val DEFAULT_EXPIRATION_DATE_TIME: Int = 5
 private const val DEFAULT_DATE_PATTERN: String = "yyyy-MM-dd HH:mm:ss"
 private val DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 

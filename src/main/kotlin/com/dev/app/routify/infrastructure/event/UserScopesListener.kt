@@ -32,7 +32,7 @@ class UserScopesListener(
                 logger.info("c=UserScopesListener m=onUserScope() s=done transactional=${dto.transaction} userId=${dto.userId}")
             } catch (ex: Exception) {
                 logger.info("c=UserScopesListener m=onUserScope() s=error transactional=${dto.transaction} userId=${dto.userId} message=${ex.message}")
-                throw GenericException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                throw GenericException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
             }
         }
     }

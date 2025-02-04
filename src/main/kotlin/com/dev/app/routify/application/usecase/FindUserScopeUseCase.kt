@@ -25,7 +25,7 @@ class FindUserScopeUseCase(
             return scopes
         } catch (ex: Exception) {
             logger.error("c=FindUserScopeUseCase m=execute() s=generic-error email=${userDomain.email} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

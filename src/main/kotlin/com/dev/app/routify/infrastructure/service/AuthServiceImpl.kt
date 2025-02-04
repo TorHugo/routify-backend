@@ -27,7 +27,7 @@ class AuthServiceImpl(
     private val findUserScopeUseCase: FindUserScopeUseCase,
     private val encoder: PasswordEncoder,
     private val jwtAuthToken: JWTAuthToken
-): AuthService {
+) : AuthService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun login(
@@ -62,12 +62,12 @@ class AuthServiceImpl(
         } catch (ex: DomainException) {
             logger.info("c=AuthServiceImpl m=login() s=error-domain email=$username message=${ex.message}")
             throw DomainException(ex.message)
-        }  catch (ex: AuthenticationException) {
+        } catch (ex: AuthenticationException) {
             logger.info("c=AuthServiceImpl m=login() s=error-authentication email=$username message=${ex.message}")
             throw AuthenticationException(ex.message)
         } catch (ex: Exception) {
             logger.error("c=AuthServiceImpl m=login() s=error-generic email=$username message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 
@@ -110,27 +110,27 @@ class AuthServiceImpl(
                 }
                 is WeakKeyException, is SignatureException -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-signature: ${ex.message}")
-                    throw JWTException(ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw JWTException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is MalformedJwtException -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-jwt-token: ${ex.message}")
-                    throw JWTException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is ExpiredJwtException -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-expired-jwt: ${ex.message}")
-                    throw JWTException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is UnsupportedJwtException -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-token-is-unsupported: ${ex.message}")
-                    throw JWTException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is IllegalArgumentException -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-claims-empty: ${ex.message}")
-                    throw JWTException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 else -> {
                     logger.error("c=AuthServiceImpl m=accessToken() s=error-generic message=${ex.message}")
-                    throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+                    throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
             }
         }
