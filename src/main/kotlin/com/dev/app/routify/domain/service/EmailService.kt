@@ -1,7 +1,7 @@
 package com.dev.app.routify.domain.service
 
-import com.dev.app.routify.domain.entity.SendingEmailDomain
+import com.dev.app.routify.application.models.SendingEmailDTO
 
 interface EmailService {
-    fun sendEmail(domain: SendingEmailDomain)
+    fun sendEmail(dto: SendingEmailDTO)
 }

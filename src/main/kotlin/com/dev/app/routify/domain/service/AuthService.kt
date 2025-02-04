@@ -1,14 +1,18 @@
 package com.dev.app.routify.domain.service
 
-import com.dev.app.routify.domain.entity.AuthDomain
+import com.dev.app.routify.application.models.AuthDTO
 
 interface AuthService {
     fun login(
         username: String,
         password: String
-    ): AuthDomain
+    ): AuthDTO
 
     fun accessToken(
         token: String
-    ): AuthDomain
+    ): AuthDTO
+
+    fun forgotPassword(
+        username: String
+    )
 }

@@ -1,8 +1,8 @@
 package com.dev.app.routify.infrastructure.service
 
 import com.dev.app.routify.application.mapper.toApplicationDTO
+import com.dev.app.routify.application.models.AuthDTO
 import com.dev.app.routify.application.usecase.FindUserScopeUseCase
-import com.dev.app.routify.domain.entity.AuthDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.AuthenticationException
 import com.dev.app.routify.domain.exception.template.DomainException
@@ -34,7 +34,7 @@ class AuthServiceImpl(
     override fun login(
         username: String,
         password: String
-    ): AuthDomain {
+    ): AuthDTO {
         try {
             logger.info("c=AuthServiceImpl m=login() s=start email=$username")
             val user = userGateway.findByEmail(email = username) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
@@ -55,7 +55,7 @@ class AuthServiceImpl(
                 user = user
             )
             logger.info("c=AuthServiceImpl m=login() s=done email=$username")
-            return AuthDomain(
+            return AuthDTO(
                 token = token.token,
                 typeToken = token.type,
                 expirationTime = token.expirationDate.toFormatted()
@@ -74,7 +74,7 @@ class AuthServiceImpl(
 
     override fun accessToken(
         token: String
-    ): AuthDomain {
+    ): AuthDTO {
         try {
             logger.info("c=AuthServiceImpl m=accessToken() s=start")
             val claims = jwtAuthToken.getClaims(
@@ -94,7 +94,7 @@ class AuthServiceImpl(
             )
 
             logger.info("c=AuthServiceImpl m=accessToken() s=done")
-            return AuthDomain(
+            return AuthDTO(
                 token = jwtToken.token,
                 typeToken = jwtToken.type,
                 expirationTime = jwtToken.expirationDate.toFormatted()
@@ -135,5 +135,9 @@ class AuthServiceImpl(
                 }
             }
         }
+    }
+
+    override fun forgotPassword(username: String) {
+        TODO("Not yet implemented")
     }
 }

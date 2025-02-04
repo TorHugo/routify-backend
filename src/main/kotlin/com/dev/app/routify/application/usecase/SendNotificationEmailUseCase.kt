@@ -1,5 +1,6 @@
 package com.dev.app.routify.application.usecase
 
+import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.models.NotificationDTO
 import com.dev.app.routify.domain.entity.SendingEmailDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
@@ -20,12 +21,13 @@ class SendNotificationEmailUseCase(
     fun execute(dto: NotificationDTO) {
         try {
             logger.info("c=SendNotificationUseCase m=execute() s=start email=${dto.identifier}")
+            val domain = SendingEmailDomain(
+                to = dto.toEmail,
+                subject = dto.subject,
+                body = dto.message
+            )
             emailService.sendEmail(
-                SendingEmailDomain(
-                    to = dto.toEmail,
-                    subject = dto.subject,
-                    body = dto.message
-                )
+                dto = domain.toApplicationDTO()
             )
             logger.info("c=SendNotificationUseCase m=execute() s=done email=${dto.identifier}")
         } catch (ex: Exception) {

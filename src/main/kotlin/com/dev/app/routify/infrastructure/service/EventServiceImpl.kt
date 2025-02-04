@@ -1,6 +1,7 @@
 package com.dev.app.routify.infrastructure.service
 
-import com.dev.app.routify.domain.entity.EventDomain
+import com.dev.app.routify.application.mapper.toDomain
+import com.dev.app.routify.application.models.EventDTO
 import com.dev.app.routify.domain.entity.UserDomain
 import com.dev.app.routify.domain.enums.EventTypeEnum
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
@@ -23,9 +24,11 @@ class EventServiceImpl(
         private const val DEFAULT_SCOPE_KEY: String = "scope-user"
     }
 
-    override fun publish(entryEvent: EventDomain) {
+    override fun publish(dto: EventDTO) {
+        val entryEvent = dto.toDomain()
         try {
             logger.info("c=EventService m=publish() s=start identifier=${entryEvent.identifier} eventType=${entryEvent.eventType}")
+
             when (entryEvent.eventType) {
                 EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT -> {
                     val user = entryEvent.domain as UserDomain

@@ -7,6 +7,7 @@ import com.dev.app.routify.infrastructure.api.models.response.DefaultResponseDTO
 import com.dev.app.routify.infrastructure.api.models.response.LoginResponseDTO
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -52,6 +53,16 @@ class AuthController(
                 tokenType = auth.typeToken,
                 expirationDate = auth.expirationTime
             )
+        )
+    }
+
+    @PatchMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun forgotPassword(
+        @RequestHeader email: String
+    ) {
+        authService.forgotPassword(
+            username = email
         )
     }
 }

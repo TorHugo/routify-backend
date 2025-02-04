@@ -1,9 +1,8 @@
 package com.dev.app.routify.infrastructure.service
 
-import com.dev.app.routify.domain.entity.SendingEmailDomain
+import com.dev.app.routify.application.models.SendingEmailDTO
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
-import com.dev.app.routify.domain.exception.template.ServiceException
 import com.dev.app.routify.domain.service.EmailService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,28 +21,21 @@ class EmailServiceImpl(
         private const val DEFAULT_UTF: String = "UTF-8"
     }
 
-    override fun sendEmail(domain: SendingEmailDomain) {
+    override fun sendEmail(dto: SendingEmailDTO) {
         try {
-            logger.info("c=EmailServiceImpl m=sendEmail() s=start email=${domain.to}")
+            logger.info("c=EmailServiceImpl m=sendEmail() s=start email=${dto.to}")
             val message = mailSender.createMimeMessage()
             val helper = MimeMessageHelper(message, DEFAULT_MULTI_PART, DEFAULT_UTF)
 
-            if (domain.to.isNullOrEmpty() ||
-                domain.subject.isNullOrEmpty() ||
-                domain.body.isNullOrEmpty()
-            ) {
-                throw ServiceException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
-            }
-
-            helper.setTo(domain.to)
-            helper.setSubject(domain.subject)
-            helper.setText(domain.body, domain.isHtml)
-            domain.attachments.forEach { helper.addAttachment(it.name, it) }
+            helper.setTo(dto.to)
+            helper.setSubject(dto.subject)
+            helper.setText(dto.body, dto.isHtml)
+            dto.attachments.forEach { helper.addAttachment(it.name, it) }
 
             mailSender.send(message)
-            logger.info("c=EmailServiceImpl m=sendEmail() s=done email=${domain.to}")
+            logger.info("c=EmailServiceImpl m=sendEmail() s=done email=${dto.to}")
         } catch (ex: Exception) {
-            logger.error("c=EmailServiceImpl m=sendEmail() s=error-generic email=${domain.to} message=${ex.message}")
+            logger.error("c=EmailServiceImpl m=sendEmail() s=error-generic email=${dto.to} message=${ex.message}")
             throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }

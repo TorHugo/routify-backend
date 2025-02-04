@@ -1,7 +1,7 @@
 package com.dev.app.routify.domain.service
 
-import com.dev.app.routify.domain.entity.EventDomain
+import com.dev.app.routify.application.models.EventDTO
 
 interface EventService {
-    fun publish(entryEvent: EventDomain)
+    fun publish(dto: EventDTO)
 }
