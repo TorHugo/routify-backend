@@ -18,7 +18,7 @@ class FindUserUseCase(
     fun execute(email: String): UserDTO? {
         try {
             logger.info("c=FindUserUseCase m=execute() s=start email=$email")
-            val user = userGateway.findByEmail(email)
+            val user = userGateway.findByEmail(email) ?: return null
             logger.info("c=FindUserUseCase m=execute() s=done email=$email")
             return user.toApplicationDTO()
         } catch (ex: Exception) {

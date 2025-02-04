@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ValidationException
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MissingRequestHeaderException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -83,6 +84,20 @@ class GlobalExceptionHandler(
                 arrayOf(ex.headerName),
                 Locale.getDefault()
             ),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleHttpMessageNotReadableException(
+        ex: HttpMessageNotReadableException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.BAD_REQUEST,
+            error = "Not Readable",
+            message = null,
             path = request.requestURI
         )
     }

@@ -85,8 +85,16 @@ class AuthServiceImpl(
                 email = claims.subject
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
 
+            if (!user.active) {
+                throw DomainException(ErrorMessageEnum.ERROR_USER_IS_NOT_ACTIVE.message)
+            }
+
+            if (!user.confirmed) {
+                throw DomainException(ErrorMessageEnum.ERROR_USER_IS_NOT_CONFIRMED.message)
+            }
+
             val userScopes = findUserScopeUseCase.execute(
-                dto = user.toApplicationDTO()!!
+                dto = user.toApplicationDTO()
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_AUTHENTICATION_SCOPES_NOT_FOUND.message)
 
             val jwtToken = jwtAuthToken.generateTokenWithScopes(
@@ -110,23 +118,23 @@ class AuthServiceImpl(
                     throw JWTException(ex.message)
                 }
                 is WeakKeyException, is SignatureException -> {
-                    logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-signature: ${ex.message}")
+                    logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-signature message=${ex.message}")
                     throw JWTException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is MalformedJwtException -> {
-                    logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-jwt-token: ${ex.message}")
+                    logger.error("c=AuthServiceImpl m=accessToken() s=error-invalid-jwt-token message=${ex.message}")
                     throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is ExpiredJwtException -> {
-                    logger.error("c=AuthServiceImpl m=accessToken() s=error-expired-jwt: ${ex.message}")
-                    throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
+                    logger.error("c=AuthServiceImpl m=accessToken() s=error-expired-jwt message=${ex.message}")
+                    throw JWTException(ErrorMessageEnum.ERROR_JWT_IS_EXPIRED.message)
                 }
                 is UnsupportedJwtException -> {
-                    logger.error("c=AuthServiceImpl m=accessToken() s=error-token-is-unsupported: ${ex.message}")
+                    logger.error("c=AuthServiceImpl m=accessToken() s=error-token-is-unsupported message=${ex.message}")
                     throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 is IllegalArgumentException -> {
-                    logger.error("c=AuthServiceImpl m=accessToken() s=error-claims-empty: ${ex.message}")
+                    logger.error("c=AuthServiceImpl m=accessToken() s=error-claims-empty message=${ex.message}")
                     throw JWTException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
                 }
                 else -> {

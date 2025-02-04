@@ -2,7 +2,7 @@ package com.dev.app.routify.application.usecase
 
 import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.CreateUserDTO
-import com.dev.app.routify.domain.entity.EventDomain
+import com.dev.app.routify.application.models.EventDTO
 import com.dev.app.routify.domain.enums.EventTypeEnum
 import com.dev.app.routify.domain.enums.ScopeKeyEnum
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
@@ -49,7 +49,7 @@ class CreateUserUseCase(
             )
 
             eventService.publish(
-                EventDomain(
+                EventDTO(
                     eventType = EVENT_SEND_CONFIRMATION,
                     domain = save,
                     parameters = listOf()
@@ -57,7 +57,7 @@ class CreateUserUseCase(
             )
 
             eventService.publish(
-                EventDomain(
+                EventDTO(
                     eventType = EVENT_USER_SCOPES,
                     domain = save,
                     parameters = listOf(

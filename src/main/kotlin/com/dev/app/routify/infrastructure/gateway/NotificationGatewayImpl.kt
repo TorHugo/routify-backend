@@ -1,7 +1,6 @@
 package com.dev.app.routify.infrastructure.gateway
 
 import com.dev.app.routify.domain.entity.NotificationDomain
-import com.dev.app.routify.domain.enums.TypeNotificationEnum
 import com.dev.app.routify.domain.gateway.NotificationGateway
 import com.dev.app.routify.infrastructure.repository.NotificationRepository
 import com.dev.app.routify.infrastructure.repository.mapper.toDomain
@@ -21,11 +20,14 @@ class NotificationGatewayImpl(
         logger.info("c=NotificationGatewayImpl m=save() s=done identifier=${domain.identifier}")
     }
 
-    override fun findByUserIdAndNotificationType(userId: Long, type: TypeNotificationEnum): NotificationDomain? {
+    override fun findByUserIdAndNotificationType(
+        userId: Long,
+        type: String
+    ): NotificationDomain? {
         logger.info("c=NotificationGatewayImpl m=findByEmailAndNotificationType() s=start userId=$userId")
         val entity = notificationRepository.findByUserIdAndType(
             userId = userId,
-            type = type.type
+            type = type
         )
         logger.info("c=NotificationGatewayImpl m=findByEmailAndNotificationType() s=done userId=$userId")
         return entity?.toDomain()

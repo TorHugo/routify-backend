@@ -31,8 +31,7 @@ fun UserDTO.toDomain(): UserDomain {
     )
 }
 
-fun UserDomain?.toApplicationDTO(): UserDTO? {
-    if (this == null) return null
+fun UserDomain.toApplicationDTO(): UserDTO {
     return UserDTO(
         identifier = this.identifier,
         externalId = this.externalId.value,

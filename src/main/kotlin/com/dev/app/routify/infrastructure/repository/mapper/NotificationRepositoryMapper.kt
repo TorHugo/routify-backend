@@ -11,9 +11,6 @@ fun NotificationDomain.toEntity(): NotificationEntity {
         userId = this.userId,
         type = this.type.value,
         status = this.status.value,
-        subject = this.subject,
-        message = this.message,
-        parameters = this.parameters,
         createdAt = this.createdAt
     )
 }
@@ -24,9 +21,6 @@ fun NotificationEntity.toDomain(): NotificationDomain {
         userId = this.userId,
         status = StatusNotification(this.status!!),
         type = TypeNotification(this.type!!),
-        subject = this.subject,
-        message = this.message,
-        parameters = this.parameters,
         createdAt = this.createdAt!!,
         updatedAt = this.updatedAt
     )

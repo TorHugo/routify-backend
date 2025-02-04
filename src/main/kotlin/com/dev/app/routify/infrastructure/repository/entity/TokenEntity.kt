@@ -8,14 +8,16 @@ import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "notification_tb", schema = "routify_db")
-open class NotificationEntity(
+@Table(name = "token_tb", schema = "routify_db")
+open class TokenEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open var notificationId: Long? = null,
+    open var tokenId: Long? = null,
     open var userId: Long,
-    open var type: String? = null,
-    open var status: String? = null,
+    open var tokenHash: String? = null,
+    open var tokenType: String? = null,
+    open var expiration: LocalDateTime? = null,
+    open var used: Boolean? = null,
     open var createdAt: LocalDateTime? = null,
     open var updatedAt: LocalDateTime? = null
 )

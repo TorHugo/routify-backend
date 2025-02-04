@@ -15,9 +15,9 @@ fun UserRequestDTO.toApplicationDTO(encryptedPassword: String): CreateUserDTO {
     )
 }
 
-fun UserConfirmationDTO.toApplicationDTO(email: String): ConfirmationUserDTO {
+fun UserConfirmationDTO.toApplicationDTO(): ConfirmationUserDTO {
     return ConfirmationUserDTO(
-        email = email,
+        email = this.email,
         hashcode = this.hash
     )
 }

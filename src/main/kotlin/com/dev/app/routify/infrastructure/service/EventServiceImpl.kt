@@ -1,5 +1,6 @@
 package com.dev.app.routify.infrastructure.service
 
+import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.EventDTO
 import com.dev.app.routify.domain.entity.UserDomain
@@ -34,7 +35,7 @@ class EventServiceImpl(
                     val user = entryEvent.domain as UserDomain
                     val event = ConfirmationCreatingAccountEventDTO(
                         transaction = entryEvent.identifier.value,
-                        user = user,
+                        user = user.toApplicationDTO(),
                         parameters = entryEvent.parameters
                     )
                     eventPublisher.publishEvent(event)
