@@ -1,9 +1,13 @@
 package com.dev.app.routify.infrastructure.exception
 
+import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
+import com.dev.app.routify.domain.exception.template.AccessDeniedException
+import com.dev.app.routify.domain.exception.template.AuthenticationException
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GatewayException
 import com.dev.app.routify.domain.exception.template.InternalServerException
 import com.dev.app.routify.domain.exception.template.InvalidArgumentException
+import com.dev.app.routify.domain.exception.template.JWTException
 import com.dev.app.routify.domain.exception.template.RepositoryException
 import com.dev.app.routify.domain.exception.template.ServiceException
 import com.dev.app.routify.infrastructure.api.models.response.DefaultResponseDTO
@@ -12,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ValidationException
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.MissingRequestHeaderException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -46,6 +51,66 @@ class GlobalExceptionHandler(
             status = HttpStatus.CONFLICT,
             error = "Domain Error",
             message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun handleAccessDeniedException(
+        ex: AccessDeniedException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.FORBIDDEN,
+            error = "Forbidden",
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException::class)
+    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+    fun handleMissingRequestHeaderException(
+        ex: MissingRequestHeaderException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.PRECONDITION_FAILED,
+            error = "Precondition Failed",
+            message = messageSource.getMessage(
+                ErrorMessageEnum.ERROR_HEADERS_OBLIGATORY.message,
+                arrayOf(ex.headerName),
+                Locale.getDefault()
+            ),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(AuthenticationException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleAuthenticationException(
+        ex: AuthenticationException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.UNAUTHORIZED,
+            error = "Unauthorized",
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(JWTException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleJWTException(
+        ex: JWTException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.UNAUTHORIZED,
+            error = "Unauthorized",
+            message = ex.message!!,
             path = request.requestURI
         )
     }

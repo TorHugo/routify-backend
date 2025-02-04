@@ -3,6 +3,7 @@ server:
   servlet:
     context-path: /api
 
+
 spring:
   application:
     name: routify-backend-api
@@ -10,6 +11,10 @@ spring:
   messages:
     basename: messages
     encoding: UTF-8
+
+  security:
+    security-key: ${SECURITY_KEY:6c9c5acb3e09048b863a865d1b524c935b9cfe8c401a1d5396cd63749e02f89427d9543b31d9c0ea1e88089f8412932e2886b273d7bc7920bea814b847dc7ad1}
+    debug: true
 
   mail:
     host: smtp.gmail.com
@@ -43,3 +48,10 @@ spring:
             non_contextual_creation: true
         default_schema: routify_db
     open-in-view: false
+
+logging:
+  level:
+    org.springframework.security.web.SecurityFilterChain: DEBUG
+    org.springframework.security.web.access.intercept.RequestCacheAwareFilter: DEBUG
+    org.springframework.security.web.csrf.CsrfFilter: DEBUG
+    org.springframework.security.web.header.HeaderWriterFilter: DEBUG

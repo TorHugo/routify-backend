@@ -29,7 +29,7 @@ class CreateHashUseCase {
             return hash
         } catch (ex: Exception) {
             logger.error("c=CreateHashUseCase m=execute() s=error-generic identifier=$identifier message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

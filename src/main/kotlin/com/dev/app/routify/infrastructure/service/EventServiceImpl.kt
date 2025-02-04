@@ -7,6 +7,7 @@ import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.service.EventService
 import com.dev.app.routify.infrastructure.event.models.ConfirmationCreatingAccountEventDTO
+import com.dev.app.routify.infrastructure.event.models.UserScopesEventDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
@@ -17,6 +18,10 @@ class EventServiceImpl(
     private val eventPublisher: ApplicationEventPublisher
 ) : EventService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
+    companion object {
+        private const val DEFAULT_EMPTY_SCOPE: String = ""
+        private const val DEFAULT_SCOPE_KEY: String = "scope-user"
+    }
 
     override fun publish(entryEvent: EventDomain) {
         try {
@@ -26,8 +31,20 @@ class EventServiceImpl(
                     val user = entryEvent.domain as UserDomain
                     val event = ConfirmationCreatingAccountEventDTO(
                         transaction = entryEvent.identifier.value,
-                        email = user.email.value,
+                        user = user,
                         parameters = entryEvent.parameters
+                    )
+                    eventPublisher.publishEvent(event)
+                }
+
+                EventTypeEnum.EVENT_USER_SCOPES -> {
+                    val user = entryEvent.domain as UserDomain
+                    val scopes = entryEvent.parameters?.find { it.key == DEFAULT_SCOPE_KEY }?.value ?: DEFAULT_EMPTY_SCOPE
+
+                    val event = UserScopesEventDTO(
+                        transaction = entryEvent.identifier.value,
+                        userId = user.identifier!!,
+                        scopeKey = scopes
                     )
                     eventPublisher.publishEvent(event)
                 }
@@ -35,7 +52,7 @@ class EventServiceImpl(
             logger.info("c=EventService m=publish() s=done identifier=${entryEvent.identifier} eventType=${entryEvent.eventType}")
         } catch (e: Exception) {
             logger.error("c=EventService m=publish() s=error identifier=${entryEvent.identifier} eventType=${entryEvent.eventType} message=${e.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

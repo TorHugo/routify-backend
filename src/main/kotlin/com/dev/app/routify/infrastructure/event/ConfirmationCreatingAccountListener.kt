@@ -2,7 +2,6 @@ package com.dev.app.routify.infrastructure.event
 
 import com.dev.app.routify.application.usecase.CreateHashUseCase
 import com.dev.app.routify.application.usecase.CreateNotificationUseCase
-import com.dev.app.routify.application.usecase.FindUserUseCase
 import com.dev.app.routify.application.usecase.SendNotificationEmailUseCase
 import com.dev.app.routify.domain.entity.NotificationDomain
 import com.dev.app.routify.domain.enums.StatusNotificationEnum
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Component
 class ConfirmationCreatingAccountListener(
     private val notificationUseCase: SendNotificationEmailUseCase,
     private val createNotificationUseCase: CreateNotificationUseCase,
-    private val findUserUseCase: FindUserUseCase,
     private val createHashUseCase: CreateHashUseCase,
     private val gson: Gson
 ) {
@@ -47,12 +45,11 @@ class ConfirmationCreatingAccountListener(
     fun onConfirmationCreatingAccount(dto: ConfirmationCreatingAccountEventDTO) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=start: ${dto.email}")
-                val user = findUserUseCase.execute(dto.email) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
-                val hash = createHashUseCase.execute(dto.email)
+                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=start email=${dto.user.email.value}")
+                val hash = createHashUseCase.execute(dto.user.email.value)
 
                 val parameters = listOf(
-                    Parameter(key = DEFAULT_KEY_FULL_NAME, value = user.fullName()),
+                    Parameter(key = DEFAULT_KEY_FULL_NAME, value = dto.user.fullName()),
                     Parameter(key = DEFAULT_KEY_HASH_CODE, value = hash.identifier.value),
                     Parameter(key = DEFAULT_KEY_EXPIRATION_DATE, value = hash.expiration.value.toFormatted())
                 )
@@ -62,8 +59,8 @@ class ConfirmationCreatingAccountListener(
                 val body = mailTemplate.message.replaceAllParameters(parameters)
 
                 val notificationDomain = NotificationDomain(
-                    userId = user.identifier!!,
-                    toEmail = user.email.value,
+                    userId = dto.user.identifier!!,
+                    toEmail = dto.user.email.value,
                     status = StatusNotification(DEFAULT_NOTIFICATION_STATUS.value),
                     type = TypeNotification(DEFAULT_NOTIFICATION_TYPE.type),
                     subject = subject,
@@ -78,11 +75,14 @@ class ConfirmationCreatingAccountListener(
                 createNotificationUseCase.execute(
                     notificationDomain
                 )
-                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=done: ${dto.email}")
+                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=done email=${dto.user.email.value}")
+            } catch (ex: DomainException) {
+                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=error-domain email=${dto.user.email.value} message=${ex.message}")
+                throw DomainException(ex.message)
             } catch (ex: Exception) {
                 // should be retry
-                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=error: ${dto.email} message=${ex.message}")
-                throw GenericException(ex.message ?: ErrorMessageEnum.ERROR_GENERIC.message)
+                logger.info("c=ConfirmationCreatingAccountListener m=onConfirmationCreatingAccount() s=error-generic email=${dto.user.email.value} message=${ex.message}")
+                throw GenericException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
             }
         }
     }

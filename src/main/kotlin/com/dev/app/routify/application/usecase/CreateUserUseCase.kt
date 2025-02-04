@@ -4,10 +4,12 @@ import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.CreateUserDTO
 import com.dev.app.routify.domain.entity.EventDomain
 import com.dev.app.routify.domain.enums.EventTypeEnum
+import com.dev.app.routify.domain.enums.ScopeKeyEnum
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.gateway.UserGateway
+import com.dev.app.routify.domain.objects.Parameter
 import com.dev.app.routify.domain.service.EventService
 import jakarta.transaction.Transactional
 import org.slf4j.Logger
@@ -21,7 +23,11 @@ class CreateUserUseCase(
     private val eventService: EventService
 ) {
     companion object {
-        private val EVENT_TYPE: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT
+        private val EVENT_SEND_CONFIRMATION: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT
+        private val EVENT_USER_SCOPES: EventTypeEnum = EventTypeEnum.EVENT_USER_SCOPES
+
+        private const val DEFAULT_SCOPE_KEY: String = "scope-user"
+        private val DEFAULT_SCOPE_VALUE: String = ScopeKeyEnum.DEFAULT_USER_SCOPE.value
     }
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -44,9 +50,19 @@ class CreateUserUseCase(
 
             eventService.publish(
                 EventDomain(
-                    eventType = EVENT_TYPE,
+                    eventType = EVENT_SEND_CONFIRMATION,
                     domain = save,
                     parameters = listOf()
+                )
+            )
+
+            eventService.publish(
+                EventDomain(
+                    eventType = EVENT_USER_SCOPES,
+                    domain = save,
+                    parameters = listOf(
+                        Parameter(key = DEFAULT_SCOPE_KEY, value = DEFAULT_SCOPE_VALUE)
+                    )
                 )
             )
             logger.info("c=CreateUserUseCase m=execute() s=done email=${dto.email}")
@@ -56,7 +72,7 @@ class CreateUserUseCase(
             throw DomainException(ex.message)
         } catch (ex: Exception) {
             logger.error("c=CreateUserUseCase m=execute() s=generic-error email=${dto.email} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

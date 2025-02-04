@@ -16,13 +16,13 @@ class FindUserUseCase(
 
     fun execute(email: String): UserDomain? {
         try {
-            logger.info("c=FindUserUseCase m=execute() s=start: email=$email")
+            logger.info("c=FindUserUseCase m=execute() s=start email=$email")
             val user = userGateway.findByEmail(email)
-            logger.info("c=FindUserUseCase m=execute() s=done: email=$email")
+            logger.info("c=FindUserUseCase m=execute() s=done email=$email")
             return user
         } catch (ex: Exception) {
             logger.error("c=FindUserUseCase m=execute() s=generic-error email=$email message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

@@ -82,7 +82,7 @@ class ConfirmationUserUseCase(
             throw InternalServerException(ex.message)
         } catch (ex: Exception) {
             logger.error("c=ConfirmationUserUseCase m=execute() s=error-generic email=${dto.email} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

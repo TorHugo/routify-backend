@@ -19,7 +19,7 @@ class CreateNotificationUseCase(
             notificationGateway.save(domain)
         } catch (ex: Exception) {
             logger.error("c=CreateNotificationUseCase m=execute() s=error-generic identifier=${domain.identifier} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

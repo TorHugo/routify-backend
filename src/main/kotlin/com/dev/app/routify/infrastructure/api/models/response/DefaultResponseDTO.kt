@@ -19,5 +19,20 @@ data class DefaultResponseDTO<T>(
             status = 201,
             data = data
         )
+
+        fun <T> unauthorized(data: T): DefaultResponseDTO<T> = DefaultResponseDTO(
+            status = 401,
+            data = data
+        )
+
+        fun <T> forbidden(data: T): DefaultResponseDTO<T> = DefaultResponseDTO(
+            status = 403,
+            data = data
+        )
+
+        fun <T> internalServerError(data: T): DefaultResponseDTO<T> = DefaultResponseDTO(
+            status = 500,
+            data = data
+        )
     }
 }

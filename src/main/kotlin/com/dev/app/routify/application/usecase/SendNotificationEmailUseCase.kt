@@ -30,7 +30,7 @@ class SendNotificationEmailUseCase(
             logger.info("c=SendNotificationUseCase m=execute() s=done email=${notification.identifier}")
         } catch (ex: Exception) {
             logger.error("c=SendNotificationUseCase m=execute() s=error-generic email=${notification.identifier} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }

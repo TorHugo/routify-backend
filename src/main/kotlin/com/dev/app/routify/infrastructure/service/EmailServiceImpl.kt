@@ -32,7 +32,7 @@ class EmailServiceImpl(
                 domain.subject.isNullOrEmpty() ||
                 domain.body.isNullOrEmpty()
             ) {
-                throw ServiceException(ErrorMessageEnum.ERROR_GENERIC.message)
+                throw ServiceException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
             }
 
             helper.setTo(domain.to)
@@ -44,7 +44,7 @@ class EmailServiceImpl(
             logger.info("c=EmailServiceImpl m=sendEmail() s=done email=${domain.to}")
         } catch (ex: Exception) {
             logger.error("c=EmailServiceImpl m=sendEmail() s=error-generic email=${domain.to} message=${ex.message}")
-            throw GenericException(ErrorMessageEnum.ERROR_GENERIC.message)
+            throw GenericException(ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }
 }
