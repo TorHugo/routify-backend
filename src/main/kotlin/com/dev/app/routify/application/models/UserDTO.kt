@@ -7,6 +7,7 @@ data class UserDTO(
     val identifier: Long? = null,
     val externalId: UUID? = null,
     val email: String? = null,
+    val password: String? = null,
     val firstName: String? = null,
     val lastName: String? = null,
     val phoneNumber: String? = null,

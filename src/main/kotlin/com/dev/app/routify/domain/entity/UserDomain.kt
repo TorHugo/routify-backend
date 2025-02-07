@@ -10,9 +10,9 @@ data class UserDomain(
     val externalId: UUIDv4 = UUIDv4.generate(),
     val email: Email,
     var password: String? = null,
-    val firstName: String,
-    val lastName: String? = null,
-    val phoneNumber: String,
+    var firstName: String,
+    var lastName: String? = null,
+    var phoneNumber: String,
     val active: Boolean = true,
     var confirmed: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
@@ -28,5 +28,15 @@ data class UserDomain(
 
     fun resetPassword(newPassword: String) {
         this.password = newPassword
+    }
+
+    fun update(
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?
+    ) {
+        this.firstName = firstName ?: this.firstName
+        this.lastName = lastName ?: this.lastName
+        this.phoneNumber = phoneNumber ?: this.phoneNumber
     }
 }

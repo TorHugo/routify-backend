@@ -36,6 +36,7 @@ fun UserDomain.toApplicationDTO(): UserDTO {
         identifier = this.identifier,
         externalId = this.externalId.value,
         email = this.email.value,
+        password = this.password,
         firstName = this.firstName,
         lastName = this.lastName,
         phoneNumber = this.phoneNumber,
