@@ -1,6 +1,7 @@
 package com.dev.app.routify.domain.service
 
 import com.dev.app.routify.application.models.AuthDTO
+import com.dev.app.routify.application.models.ResetPasswordDTO
 
 interface AuthService {
     fun login(
@@ -14,5 +15,9 @@ interface AuthService {
 
     fun forgotPassword(
         username: String
+    )
+
+    fun resetPassword(
+        dto: ResetPasswordDTO
     )
 }

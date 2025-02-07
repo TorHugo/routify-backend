@@ -20,6 +20,12 @@ class NotificationGatewayImpl(
         logger.info("c=NotificationGatewayImpl m=save() s=done identifier=${domain.identifier}")
     }
 
+    override fun delete(domain: NotificationDomain) {
+        logger.info("c=NotificationGatewayImpl m=delete() s=start identifier=${domain.identifier}")
+        notificationRepository.delete(domain.toEntity())
+        logger.info("c=NotificationGatewayImpl m=delete() s=done identifier=${domain.identifier}")
+    }
+
     override fun findByUserIdAndNotificationType(
         userId: Long,
         type: String

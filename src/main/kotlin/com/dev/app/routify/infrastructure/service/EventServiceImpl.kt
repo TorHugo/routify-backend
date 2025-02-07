@@ -5,10 +5,13 @@ import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.EventDTO
 import com.dev.app.routify.domain.entity.UserDomain
 import com.dev.app.routify.domain.enums.EventTypeEnum
+import com.dev.app.routify.domain.enums.TemplateEmailEnum
+import com.dev.app.routify.domain.enums.TypeNotificationEnum
+import com.dev.app.routify.domain.enums.TypeTokenEnum
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.service.EventService
-import com.dev.app.routify.infrastructure.event.models.ConfirmationCreatingAccountEventDTO
+import com.dev.app.routify.infrastructure.event.models.SendNotificationWithHashTokenEventDTO
 import com.dev.app.routify.infrastructure.event.models.UserScopesEventDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,10 +36,13 @@ class EventServiceImpl(
             when (entryEvent.eventType) {
                 EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT -> {
                     val user = entryEvent.domain as UserDomain
-                    val event = ConfirmationCreatingAccountEventDTO(
+                    val event = SendNotificationWithHashTokenEventDTO(
                         transaction = entryEvent.identifier.value,
                         user = user.toApplicationDTO(),
-                        parameters = entryEvent.parameters
+                        typeNotification = TypeNotificationEnum.SEND_CONFIRMATION_ACCOUNT,
+                        typeToken = TypeTokenEnum.TOKEN_CONFIRMATION_ACCOUNT,
+                        template = TemplateEmailEnum.SEND_CONFIRMATION_CREATING_ACCOUNT,
+                        parameters = entryEvent.parameters!!
                     )
                     eventPublisher.publishEvent(event)
                 }
@@ -49,6 +55,19 @@ class EventServiceImpl(
                         transaction = entryEvent.identifier.value,
                         userId = user.identifier!!,
                         scopeKey = scopes
+                    )
+                    eventPublisher.publishEvent(event)
+                }
+
+                EventTypeEnum.EVENT_FORGOT_PASSWORD -> {
+                    val user = entryEvent.domain as UserDomain
+                    val event = SendNotificationWithHashTokenEventDTO(
+                        transaction = entryEvent.identifier.value,
+                        user = user.toApplicationDTO(),
+                        typeNotification = TypeNotificationEnum.SEND_FORGOT_PASSWORD,
+                        typeToken = TypeTokenEnum.TOKEN_FORGOT_PASSWORD,
+                        template = TemplateEmailEnum.SEND_PASSWORD_RESET,
+                        parameters = entryEvent.parameters!!
                     )
                     eventPublisher.publishEvent(event)
                 }

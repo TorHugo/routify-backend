@@ -13,7 +13,6 @@ fun NotificationDTO.toDomain(): NotificationDomain {
         type = TypeNotification(this.type),
         subject = this.subject,
         message = this.message,
-        parameters = this.parameters,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt
     )
@@ -28,7 +27,6 @@ fun NotificationDomain.toApplicationDTO(): NotificationDTO {
         type = this.type.value,
         subject = this.subject!!,
         message = this.message!!,
-        parameters = this.parameters,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt
     )

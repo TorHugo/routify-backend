@@ -20,6 +20,12 @@ class TokenGatewayImpl(
         logger.info("c=TokenGatewayImpl m=save() s=done identifier=${domain.userId}")
     }
 
+    override fun delete(domain: TokenDomain) {
+        logger.info("c=TokenGatewayImpl m=delete() s=start identifier=${domain.userId}")
+        tokenRepository.delete(domain.toEntity())
+        logger.info("c=TokenGatewayImpl m=delete() s=done identifier=${domain.userId}")
+    }
+
     override fun findByUserIdAndTokenType(
         userId: Long,
         type: String
@@ -30,6 +36,16 @@ class TokenGatewayImpl(
             type = type
         )
         logger.info("c=TokenGatewayImpl m=findByUserIdAndTokenType() s=done userId=$userId")
+        return entity?.toDomain()
+    }
+
+    override fun findByUserIdAndHashToken(userId: Long, hashcode: String): TokenDomain? {
+        logger.info("c=TokenGatewayImpl m=findByUserIdAndHashToken() s=start userId=$userId")
+        val entity = tokenRepository.findByUserIdAndTokenHash(
+            userId = userId,
+            hashcode = hashcode
+        )
+        logger.info("c=TokenGatewayImpl m=findByUserIdAndHashToken() s=done userId=$userId")
         return entity?.toDomain()
     }
 }

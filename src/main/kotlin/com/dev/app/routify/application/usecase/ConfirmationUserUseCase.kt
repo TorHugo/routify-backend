@@ -41,7 +41,7 @@ class ConfirmationUserUseCase(
 
             val notification = notificationGateway.findByUserIdAndNotificationType(
                 userId = user.identifier,
-                type = DEFAULT_TYPE_NOTIFICATION.type
+                type = DEFAULT_TYPE_NOTIFICATION.value
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_NOTIFICATION_EMAIL_NOT_FOUND.message)
 
             if (token.used!!) {

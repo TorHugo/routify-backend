@@ -23,9 +23,7 @@ class OAuthScopeInterceptor(
     companion object {
         private val PUBLIC = arrayOf(
             "/api/v1/auth/.*",
-            "/api/v1/users/create",
-            "/api/v1/users/confirm-email",
-            "/api/error"
+            "/api/v1/users/create"
         )
 
         private const val DEFAULT_AUTHORIZATION_HEADER = "Authorization"

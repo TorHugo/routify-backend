@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface NotificationRepository : JpaRepository<NotificationEntity, Long> {
-    @Query("select n from NotificationEntity n where n.userId = ?1 and n.type = ?2")
+    @Query("select n from NotificationEntity n where n.userId = ?1 and n.type = ?2 order by n.createdAt desc limit 1")
     fun findByUserIdAndType(userId: Long, type: String): NotificationEntity?
 }

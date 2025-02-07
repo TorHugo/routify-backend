@@ -2,8 +2,7 @@ package com.dev.app.routify.infrastructure.api.models.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class UserConfirmationDTO(
-    val email: String,
+data class UserConfirmationRequestDTO(
     @JsonProperty("hashcode")
     val hash: String
 )

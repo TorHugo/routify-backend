@@ -9,7 +9,7 @@ data class UserDomain(
     override val identifier: Long? = null,
     val externalId: UUIDv4 = UUIDv4.generate(),
     val email: Email,
-    val password: String? = null,
+    var password: String? = null,
     val firstName: String,
     val lastName: String? = null,
     val phoneNumber: String,
@@ -24,5 +24,9 @@ data class UserDomain(
 
     fun confirmation() {
         this.confirmed = true
+    }
+
+    fun resetPassword(newPassword: String) {
+        this.password = newPassword
     }
 }

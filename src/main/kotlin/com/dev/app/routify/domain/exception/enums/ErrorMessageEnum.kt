@@ -46,5 +46,9 @@ enum class ErrorMessageEnum(val message: String) {
     ERROR_SCOPE_KEY_NOT_FOUND(message = "scope.key.not.found"),
 
     // JWT error
-    ERROR_JWT_IS_EXPIRED(message = "jwt.is.expired")
+    ERROR_JWT_IS_EXPIRED(message = "jwt.is.expired"),
+
+    // ForgotPassword error
+    ERROR_FORGOT_PASSWORD_IS_EXPIRED(message = "forgot.password.is.expired"),
+    ERROR_FORGOT_PASSWORD_TOKEN_HAS_BEEN_USED(message = "forgot.password.token.has.been.used")
 }

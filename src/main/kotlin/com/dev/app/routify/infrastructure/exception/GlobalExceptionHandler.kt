@@ -125,7 +125,7 @@ class GlobalExceptionHandler(
         return createErrorResponse(
             status = HttpStatus.UNAUTHORIZED,
             error = "Unauthorized",
-            message = ex.message!!,
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
             path = request.requestURI
         )
     }

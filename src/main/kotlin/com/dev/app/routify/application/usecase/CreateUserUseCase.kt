@@ -19,18 +19,18 @@ import java.util.*
 
 @Service
 class CreateUserUseCase(
-    private val userGateway: UserGateway,
-    private val eventService: EventService
+    private val eventService: EventService,
+    private val userGateway: UserGateway
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
+        private const val DEFAULT_SCOPE_KEY: String = "scope-user"
+
+        private const val DEFAULT_KEY_FULL_NAME: String = "name"
         private val EVENT_SEND_CONFIRMATION: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT
         private val EVENT_USER_SCOPES: EventTypeEnum = EventTypeEnum.EVENT_USER_SCOPES
-
-        private const val DEFAULT_SCOPE_KEY: String = "scope-user"
         private val DEFAULT_SCOPE_VALUE: String = ScopeKeyEnum.DEFAULT_USER_SCOPE.value
     }
-
-    private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
     fun execute(dto: CreateUserDTO): UUID {
@@ -52,7 +52,12 @@ class CreateUserUseCase(
                 EventDTO(
                     eventType = EVENT_SEND_CONFIRMATION,
                     domain = save,
-                    parameters = listOf()
+                    parameters = listOf(
+                        Parameter(
+                            key = DEFAULT_KEY_FULL_NAME,
+                            value = save.fullName()
+                        )
+                    )
                 )
             )
 
