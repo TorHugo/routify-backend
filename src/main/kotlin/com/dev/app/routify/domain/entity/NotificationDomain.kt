@@ -15,9 +15,10 @@ data class NotificationDomain(
     val subject: String? = null,
     val message: String? = null,
     val createdAt: LocalDateTime? = LocalDateTime.now(),
-    val updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime? = null
 ) : Serializable, AggregateRoot<Long?>() {
     fun confirmation() {
         this.status = StatusNotification(StatusNotificationEnum.CONFIRMED.value)
+        this.updatedAt = LocalDateTime.now()
     }
 }

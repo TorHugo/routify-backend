@@ -5,15 +5,18 @@ import com.dev.app.routify.application.usecase.FindUserWithThrowsUseCase
 import com.dev.app.routify.application.usecase.UpdateUserPasswordUseCase
 import com.dev.app.routify.application.usecase.UpdateUserUseCase
 import com.dev.app.routify.infrastructure.api.mapper.toApplicationDTO
+import com.dev.app.routify.infrastructure.api.mapper.toResponseDTO
 import com.dev.app.routify.infrastructure.api.models.request.UserRequestDTO
 import com.dev.app.routify.infrastructure.api.models.request.UserUpdatePasswordRequestDTO
 import com.dev.app.routify.infrastructure.api.models.request.UserUpdateRequestDTO
 import com.dev.app.routify.infrastructure.api.models.response.DefaultResponseDTO
+import com.dev.app.routify.infrastructure.api.models.response.UserCreatedResponseDTO
 import com.dev.app.routify.infrastructure.api.models.response.UserResponseDTO
 import com.dev.app.routify.infrastructure.security.JWTAuthToken
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -37,10 +40,10 @@ class UserController(
     fun create(
         @Valid @RequestBody
         dto: UserRequestDTO
-    ): DefaultResponseDTO<UserResponseDTO> {
+    ): DefaultResponseDTO<UserCreatedResponseDTO> {
         val encryptedPassword = encoder.encode(dto.password)
         val externalId = createUser.execute(dto.toApplicationDTO(encryptedPassword))
-        return DefaultResponseDTO.created(UserResponseDTO(externalId))
+        return DefaultResponseDTO.created(UserCreatedResponseDTO(externalId))
     }
 
     @PatchMapping("/me")
@@ -74,4 +77,17 @@ class UserController(
             )
         )
     }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    fun findUser(
+        @RequestHeader("Authorization") token: String
+    ): DefaultResponseDTO<UserResponseDTO> {
+        val claims = jwtAuthToken.getClaims(token)
+        val user = findUserWithThrowsUseCase.execute(claims.subject)
+        return DefaultResponseDTO.success(
+            data = user.toResponseDTO()
+        )
+    }
+
 }

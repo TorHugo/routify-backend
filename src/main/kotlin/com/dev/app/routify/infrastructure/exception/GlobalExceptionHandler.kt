@@ -9,6 +9,7 @@ import com.dev.app.routify.domain.exception.template.InternalServerException
 import com.dev.app.routify.domain.exception.template.InvalidArgumentException
 import com.dev.app.routify.domain.exception.template.JWTException
 import com.dev.app.routify.domain.exception.template.RepositoryException
+import com.dev.app.routify.domain.exception.template.ResourceNotFoundException
 import com.dev.app.routify.domain.exception.template.ServiceException
 import com.dev.app.routify.infrastructure.api.models.response.DefaultResponseDTO
 import com.dev.app.routify.infrastructure.exception.models.ExceptionData
@@ -98,6 +99,20 @@ class GlobalExceptionHandler(
             status = HttpStatus.BAD_REQUEST,
             error = "Not Readable",
             message = null,
+            path = request.requestURI
+        )
+    }
+
+    @ExceptionHandler(ResourceNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun handleResourceNotFoundException(
+        ex: ResourceNotFoundException,
+        request: HttpServletRequest
+    ): DefaultResponseDTO<ExceptionData> {
+        return createErrorResponse(
+            status = HttpStatus.NOT_FOUND,
+            error = "Not Found",
+            message = messageSource.getMessage(ex.message!!, null, Locale.getDefault()),
             path = request.requestURI
         )
     }

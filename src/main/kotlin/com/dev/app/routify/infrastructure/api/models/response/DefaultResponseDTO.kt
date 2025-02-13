@@ -1,13 +1,12 @@
 package com.dev.app.routify.infrastructure.api.models.response
 
-import com.fasterxml.jackson.annotation.JsonFormat
+import com.dev.app.routify.domain.extension.toFormatted
 import java.time.LocalDateTime
 
 data class DefaultResponseDTO<T>(
     val status: Int,
     val data: T,
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
-    val timestamp: LocalDateTime = LocalDateTime.now()
+    val timestamp: String = LocalDateTime.now().toFormatted()
 ) {
     companion object {
         fun <T> success(data: T): DefaultResponseDTO<T> = DefaultResponseDTO(

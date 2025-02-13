@@ -14,9 +14,10 @@ data class TokenDomain(
     val expiration: ExpirationDate,
     var used: Boolean? = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime? = null
 ) : Serializable, AggregateRoot<Long?>() {
     fun confirmation() {
         this.used = true
+        this.updatedAt = LocalDateTime.now()
     }
 }

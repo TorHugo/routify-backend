@@ -1,4 +1,4 @@
-package com.dev.app.routify.infrastructure.security.interceptor
+package com.dev.app.routify.infrastructure.security.filter
 
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.AccessDeniedException
@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
-class OAuthScopeInterceptor(
+class OAuthScopeFilter(
     private val jwtAuthToken: JWTAuthToken,
     private val permissionService: PermissionService
 ) : HandlerInterceptor {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
         private val PUBLIC = arrayOf(
+            "/actuator/.*",
             "/api/v1/auth/.*",
             "/api/v1/users/create"
         )

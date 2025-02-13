@@ -16,7 +16,7 @@ data class UserDomain(
     val active: Boolean = true,
     var confirmed: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime? = null
 ) : Serializable, AggregateRoot<Long?>() {
     fun fullName(): String {
         return "${this.firstName} ${this.lastName}"
@@ -24,6 +24,7 @@ data class UserDomain(
 
     fun confirmation() {
         this.confirmed = true
+        this.updatedAt = LocalDateTime.now()
     }
 
     fun resetPassword(newPassword: String) {
