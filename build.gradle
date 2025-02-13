@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.dev.app'
-version = '0.0.1-SNAPSHOT'
+version = 'v1.0.0'
 
 java {
     toolchain {
@@ -20,6 +20,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+bootJar {
+    archiveFileName = 'routify-backend-api.jar'
 }
 
 repositories {

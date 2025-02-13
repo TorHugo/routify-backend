@@ -89,5 +89,4 @@ class UserController(
             data = user.toResponseDTO()
         )
     }
-
 }
