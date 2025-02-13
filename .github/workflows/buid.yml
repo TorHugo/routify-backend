@@ -11,6 +11,7 @@ jobs:
 
   discord-notification-start:
     runs-on: ubuntu-latest
+    environment: routify-app
 
     steps:
       - name: Discord Notification Start
@@ -25,6 +26,7 @@ jobs:
   build:
     needs: discord-notification-start
     runs-on: ubuntu-latest
+    environment: routify-app
     outputs:
       jar_path: ${{ steps.save_jar.outputs.jar_path }}
 
@@ -60,6 +62,7 @@ jobs:
   build-docker-and-deploy-ecr:
     needs: build
     runs-on: ubuntu-latest
+    environment: routify-app
 
     steps:
       - uses: actions/checkout@v3
@@ -91,9 +94,11 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 
+
   discord-notification-done:
     needs: build-docker-and-deploy-ecr
     runs-on: ubuntu-latest
+    environment: routify-app
 
     steps:
       - name: Discord Notification
