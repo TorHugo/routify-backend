@@ -7,7 +7,7 @@ import com.dev.app.routify.domain.entity.UserScopeDomain
 
 fun UserScopeDomain.toApplicationDTO(): UserScopeDTO {
     return UserScopeDTO(
-        user = this.user.toApplicationDTO()!!,
+        user = this.user.toApplicationDTO(),
         scopes = this.scopes.map { it.toApplicationDTO() }
     )
 }
