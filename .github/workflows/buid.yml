@@ -118,7 +118,6 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ECR_URL }}
           ECR_REPOSITORY: ${{ secrets.AWS_ECR_NAME }}
         run: |
-          IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           aws ssm send-command \
             --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
@@ -126,10 +125,11 @@ jobs:
             --output text
           
           ### Update docker-compose.yml ###
+          IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           aws ssm send-command \
             --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["sed -i \"s|image: .*routify-app-repository:.*|image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|\" /home/routify/ec2/docker-compose.yml"]' \
+            --parameters 'commands=["sed -i \"s|image: .*routify-app-repository:.*|image: ${{ secrets.AWS_ECR_URL }}/${{ secrets.AWS_ECR_NAME }}:$IMAGE_TAG|\" /home/routify/ec2/docker-compose.yml"]' \
             --output text
 
           ### Start new container ###
