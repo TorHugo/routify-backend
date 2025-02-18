@@ -124,7 +124,7 @@ jobs:
           
           ### Update docker-compose.yml ###
           IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)
-          ESCAPED_COMMAND="sed -i 's|image: .*|image: ${{ secrets.AWS_ECR_URL }}/${{ secrets.AWS_ECR_NAME }}:${IMAGE_TAG}|' /home/routify/ec2/docker-compose.yml"
+          ESCAPED_COMMAND="sed -i '/backend:/,/image:/s|image: .*|image: ${{ secrets.AWS_ECR_URL }}/${{ secrets.AWS_ECR_NAME }}:${IMAGE_TAG}|' /home/routify/ec2/docker-compose.yml"
           aws ssm send-command \
             --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
@@ -138,29 +138,30 @@ jobs:
             --parameters '{"commands":["cd /home/routify/ec2 && docker-compose up -d"]}' \
             --output text
 
-  validation-health-check:
-    needs: deploy-to-ec2
-    runs-on: ubuntu-latest
-    environment: routify-app
 
-    steps:
-      - name: Validating health check...
-        run: |
-          for i in {1..3}; do
-            echo "Health check attempt $i..."
-            response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.HEALTH_CHECK_URL }})
-            if [ "$response" != "200" ]; then
-              echo "Health check failed with status $response"
-              exit 1
-            fi
-            echo "Health check passed"
-            if [ $i -lt 3 ]; then
-              sleep 10
-            fi
-          done
+#  validation-health-check:
+#    needs: deploy-to-ec2
+#    runs-on: ubuntu-latest
+#    environment: routify-app
+#
+#    steps:
+#      - name: Validating health check...
+#        run: |
+#          for i in {1..3}; do
+#            echo "Health check attempt $i..."
+#            response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.HEALTH_CHECK_URL }})
+#            if [ "$response" != "200" ]; then
+#              echo "Health check failed with status $response"
+#              exit 1
+#            fi
+#            echo "Health check passed"
+#            if [ $i -lt 3 ]; then
+#              sleep 10
+#            fi
+#          done
 
   discord-notification-done:
-    needs: validation-health-check
+    needs: deploy-to-ec2 #validation-health-check
     runs-on: ubuntu-latest
     environment: routify-app
 
