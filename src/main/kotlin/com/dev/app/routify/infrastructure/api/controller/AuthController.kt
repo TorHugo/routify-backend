@@ -87,6 +87,8 @@ class AuthController(
         )
     }
 
+    // TODO: Resend the confirmation email
+
     @PatchMapping("/reset-password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun resetPassword(
