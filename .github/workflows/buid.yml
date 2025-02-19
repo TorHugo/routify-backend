@@ -130,6 +130,13 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters "{\"commands\":[\"$ESCAPED_COMMAND\"]}" \
             --output text
+          
+          ### Authentication credentials to use ecr ###
+          aws ssm send-command \
+          --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --parameters '{"commands":["aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}"]}' \
+          --output text
 
           ### Start new container ###
           aws ssm send-command \
