@@ -22,7 +22,7 @@ class OAuthScopeFilter(
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
         private val PUBLIC = arrayOf(
-            "/actuator/.*",
+            "/api/actuator/.*",
             "/api/v1/auth/.*",
             "/api/v1/users/create"
         )
