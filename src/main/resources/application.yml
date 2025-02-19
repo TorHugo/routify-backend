@@ -50,7 +50,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
-  endpoint:
-    prometheus:
-      enabled: true
+        include: prometheus
+  metrics:
+    tags:
+      application: routify-backend
