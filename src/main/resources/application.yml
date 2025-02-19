@@ -50,7 +50,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: "health,prometheus,metrics"
   metrics:
     tags:
       application: routify-backend
