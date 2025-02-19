@@ -20,7 +20,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           title: "[start] routify deployment"
-          description: "Starting the deployment and build of the Routify Backend API."
+          description: "📌 Starting the deployment and build of the Routify Backend API."
           username: GitHub Actions
 
   build:
@@ -108,12 +108,11 @@ jobs:
 
       - name: Install AWS CLI
         run: |
-          ### Stop current container ###
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
 
-      - name: Install Session Manager plugin
+      - name: Deploy to EC2 with ECR authentication
         run: |
           ### Stop current container ###
           aws ssm send-command \
@@ -130,13 +129,13 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters "{\"commands\":[\"$ESCAPED_COMMAND\"]}" \
             --output text
-          
-          ### Authentication credentials to use ecr ###
+
+          ### Adicionar autenticação ECR antes de iniciar containers ###
           aws ssm send-command \
-          --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
-          --document-name "AWS-RunShellScript" \
-          --parameters '{"commands":["aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}"]}' \
-          --output text
+            --instance-ids "${{ secrets.AWS_EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters '{"commands":["aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}"]}' \
+            --output text
 
           ### Start new container ###
           aws ssm send-command \
@@ -145,17 +144,64 @@ jobs:
             --parameters '{"commands":["cd /home/routify/ec2 && docker-compose up -d"]}' \
             --output text
 
-  discord-notification-done:
-    needs: deploy-to-ec2 #validation-health-check
+  validation-health-check:
+    needs: deploy-to-ec2
     runs-on: ubuntu-latest
     environment: routify-app
 
     steps:
-      - name: Discord Notification
+      - name: Wait for application startup
+        run: sleep 30
+
+      - name: Execute health check
+        id: health_check
+        run: |
+          HEALTH_URL="${{ secrets.API_BASE_URL }}/health"
+          MAX_RETRIES=3
+          RETRY_INTERVAL=10
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES..."
+          
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_URL)
+          
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "Health check succeeded!"
+              exit 0
+            fi
+          
+            echo "Health check returned status $HTTP_STATUS, waiting $RETRY_INTERVAL seconds before retry..."
+          
+            if [ $i -lt $MAX_RETRIES ]; then
+              sleep $RETRY_INTERVAL
+            fi
+          done
+          
+          echo "Health check failed after $MAX_RETRIES attempts."
+          exit 1
+
+      - name: Discord Notification Health Check Success
         uses: sarisia/actions-status-discord@v1.9.0
-        if: always()
+        if: success()
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "[done] routify deployment"
-          description: "Done with successfully the deployment and build of the Routify Backend API."
+          title: "[health check passed] routify deployment"
+          description: "✅ Health check passed successfully! Routify API is up and running."
+          color: 0x00ff00
+          username: GitHub Actions
+
+  discord-notification-error:
+    needs: [discord-notification-start, build, build-docker-and-deploy-ecr, deploy-to-ec2, validation-health-check]
+    if: failure()
+    runs-on: ubuntu-latest
+    environment: routify-app
+
+    steps:
+      - name: Discord Notification Error
+        uses: sarisia/actions-status-discord@v1.9.0
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "[ERROR] routify deployment failed"
+          description: "❌ The deployment of Routify Backend API failed. Please check GitHub Actions logs."
+          color: 0xff0000
           username: GitHub Actions
