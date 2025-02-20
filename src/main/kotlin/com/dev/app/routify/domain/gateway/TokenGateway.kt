@@ -16,4 +16,10 @@ interface TokenGateway {
         userId: Long,
         hashcode: String
     ): TokenDomain?
+
+    fun findByUserIdAndTokenTypeAndUsed(
+        userId: Long,
+        type: String,
+        used: Boolean
+    ): TokenDomain?
 }

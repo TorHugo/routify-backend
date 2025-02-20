@@ -12,6 +12,7 @@ import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.service.EventService
 import com.dev.app.routify.infrastructure.event.models.SendNotificationWithHashTokenEventDTO
+import com.dev.app.routify.infrastructure.event.models.SendNotificationWithNameEventDTO
 import com.dev.app.routify.infrastructure.event.models.UserScopesEventDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,7 +35,7 @@ class EventServiceImpl(
             logger.info("c=EventService m=publish() s=start identifier=${entryEvent.identifier} eventType=${entryEvent.eventType}")
 
             when (entryEvent.eventType) {
-                EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT -> {
+                EventTypeEnum.EVENT_SEND_CONFIRMATION_EMAIL_TO_USER -> {
                     val user = entryEvent.domain as UserDomain
                     val event = SendNotificationWithHashTokenEventDTO(
                         transaction = entryEvent.identifier.value,
@@ -67,6 +68,18 @@ class EventServiceImpl(
                         typeNotification = TypeNotificationEnum.SEND_FORGOT_PASSWORD,
                         typeToken = TypeTokenEnum.TOKEN_FORGOT_PASSWORD,
                         template = TemplateEmailEnum.SEND_PASSWORD_RESET,
+                        parameters = entryEvent.parameters!!
+                    )
+                    eventPublisher.publishEvent(event)
+                }
+
+                EventTypeEnum.EVENT_WELCOME_USER -> {
+                    val user = entryEvent.domain as UserDomain
+                    val event = SendNotificationWithNameEventDTO(
+                        transaction = entryEvent.identifier.value,
+                        user = user.toApplicationDTO(),
+                        typeNotification = TypeNotificationEnum.SEND_WELCOME_EMAIL,
+                        template = TemplateEmailEnum.SEND_WELCOME_EMAIL,
                         parameters = entryEvent.parameters!!
                     )
                     eventPublisher.publishEvent(event)

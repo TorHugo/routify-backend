@@ -48,4 +48,15 @@ class TokenGatewayImpl(
         logger.info("c=TokenGatewayImpl m=findByUserIdAndHashToken() s=done userId=$userId")
         return entity?.toDomain()
     }
+
+    override fun findByUserIdAndTokenTypeAndUsed(userId: Long, type: String, used: Boolean): TokenDomain? {
+        logger.info("c=TokenGatewayImpl m=findByUserIdAndTokenTypeAndUsed() s=start userId=$userId type=$type used=$used")
+        val entity = tokenRepository.findByUserIdAndTypeAndUsed(
+            userId = userId,
+            type = type,
+            used = used
+        )
+        logger.info("c=TokenGatewayImpl m=findByUserIdAndTokenTypeAndUsed() s=done userId=$userId type=$type used=$used")
+        return entity?.toDomain()
+    }
 }

@@ -12,6 +12,7 @@ import com.dev.app.routify.domain.objects.Parameter
 import com.dev.app.routify.domain.objects.StatusNotification
 import com.dev.app.routify.domain.objects.TypeNotification
 import com.dev.app.routify.domain.service.NotificationEmailService
+import com.dev.app.routify.infrastructure.event.models.SendBaseNotificationEventDTO
 import com.dev.app.routify.infrastructure.event.models.SendNotificationWithHashTokenEventDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component
 class SendNotificationWithHashTokenListener(
     private val createTokenUseCase: CreateTokenUseCase,
     private val notificationEmailService: NotificationEmailService
-) {
+): SendBaseNotificationEvent(notificationEmailService) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
         private const val DEFAULT_KEY_HASH_CODE: String = "hashcode"
@@ -75,12 +76,12 @@ class SendNotificationWithHashTokenListener(
             notificationEmailService.execute(
                 domain = notificationDomain
             )
-            logger.info("c=SendNotificationWithHashTokenListener m=onSendNotificationWithHashTokenListener() s=done email=${dto.user.email} type=${dto.typeToken}")
+            logger.info("c=SendNotificationWithHashTokenListener m=handleSendNotificationWithHashTokenListener() s=done email=${dto.user.email} type=${dto.typeToken}")
         } catch (ex: DomainException) {
-            logger.info("c=SendNotificationWithHashTokenListener m=onSendNotificationWithHashTokenListener() s=error-domain email=${dto.user.email} type=${dto.typeToken} message=${ex.message}")
+            logger.info("c=SendNotificationWithHashTokenListener m=handleSendNotificationWithHashTokenListener() s=error-domain email=${dto.user.email} type=${dto.typeToken} message=${ex.message}")
             throw DomainException(ex.message)
         } catch (ex: Exception) {
-            logger.info("c=SendNotificationWithHashTokenListener m=onSendNotificationWithHashTokenListener() s=error-generic email=${dto.user.email} type=${dto.typeToken} message=${ex.message}")
+            logger.info("c=SendNotificationWithHashTokenListener m=handleSendNotificationWithHashTokenListener() s=error-generic email=${dto.user.email} type=${dto.typeToken} message=${ex.message}")
             throw GenericException(ex.message ?: ErrorMessageEnum.INTERNAL_SERVER_ERROR.message)
         }
     }

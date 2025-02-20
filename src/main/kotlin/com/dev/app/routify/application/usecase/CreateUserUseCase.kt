@@ -25,9 +25,8 @@ class CreateUserUseCase(
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
         private const val DEFAULT_SCOPE_KEY: String = "scope-user"
-
         private const val DEFAULT_KEY_FULL_NAME: String = "name"
-        private val EVENT_SEND_CONFIRMATION: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_CREATING_ACCOUNT
+        private val EVENT_SEND_CONFIRMATION: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_EMAIL_TO_USER
         private val EVENT_USER_SCOPES: EventTypeEnum = EventTypeEnum.EVENT_USER_SCOPES
         private val DEFAULT_SCOPE_VALUE: String = ScopeKeyEnum.DEFAULT_USER_SCOPE.value
     }

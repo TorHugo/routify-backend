@@ -6,7 +6,9 @@ import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.infrastructure.event.models.UserScopesEventDTO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
@@ -18,11 +20,19 @@ class UserScopesListener(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
+        private const val DEFAULT_THEAD_DELAY: Long = 500L
     }
 
     @EventListener
     fun onUserScope(dto: UserScopesEventDTO) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(DEFAULT_THEAD_DELAY)
+            handleUserScope(dto = dto)
+        }
+    }
+
+    suspend fun handleUserScope(dto: UserScopesEventDTO) {
+        runBlocking {
             try {
                 logger.info("c=UserScopesListener m=onUserScope() s=start transactional=${dto.transaction} userId=${dto.userId}")
                 createUserScopeUseCase.execute(

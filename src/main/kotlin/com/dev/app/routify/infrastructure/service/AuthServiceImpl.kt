@@ -55,7 +55,8 @@ class AuthServiceImpl(
     ): AuthDTO {
         try {
             logger.info("c=AuthServiceImpl m=login() s=start email=$username")
-            val user = userGateway.findByEmail(email = username) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
+            val user = userGateway.findByEmail(email = username)
+                ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
             val isPasswordMatches = encoder.matches(
                 password,
                 user.password

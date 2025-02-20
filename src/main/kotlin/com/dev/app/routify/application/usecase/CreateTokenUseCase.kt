@@ -22,14 +22,25 @@ class CreateTokenUseCase(
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
         private const val DEFAULT_EXPIRATION_MINUTES_TIME: Long = 15L
+        private const val DEFAULT_TOKEN_USED: Boolean = false
     }
 
     fun execute(user: UserDTO, tokenType: String): TokenDTO {
         try {
             logger.info("c=CreateHashUseCase m=execute() s=start user=${user.email}")
             val userDomain = user.toDomain()
-            val tokenHash = TokenDomain(
+            val existsToken = tokenGateway.findByUserIdAndTokenTypeAndUsed(
                 userId = userDomain.identifier!!,
+                type = tokenType,
+                used = DEFAULT_TOKEN_USED
+            )
+
+            if (existsToken != null) {
+                return existsToken.toApplicationDTO()
+            }
+
+            val tokenHash = TokenDomain(
+                userId = userDomain.identifier,
                 tokenHash = GenericHash.generate(),
                 tokenType = TypeToken(tokenType),
                 expiration = ExpirationDate.generate(
