@@ -62,8 +62,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 
     // aws
-    implementation("com.amazonaws:aws-java-sdk-sqs:1.12.XXX")
-    implementation("org.springframework.cloud:spring-cloud-aws-messaging:2.2.XXX")
+    implementation("com.amazonaws:aws-java-sdk-sns:1.12.530")
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.1")
 
     // tools
     compileOnly 'org.projectlombok:lombok'

@@ -2,11 +2,13 @@ package com.dev.app.routify.infrastructure.service
 
 import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.models.AuthDTO
-import com.dev.app.routify.application.models.EventDTO
 import com.dev.app.routify.application.models.ResetPasswordDTO
 import com.dev.app.routify.application.usecase.FindUserScopeUseCase
-import com.dev.app.routify.domain.enums.EventTypeEnum
+import com.dev.app.routify.domain.enums.DomainEventTypeEnum
+import com.dev.app.routify.domain.enums.SubTypeEventEnum
 import com.dev.app.routify.domain.enums.TypeNotificationEnum
+import com.dev.app.routify.domain.event.DomainEvent
+import com.dev.app.routify.domain.event.DomainEventProducer
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.AuthenticationException
 import com.dev.app.routify.domain.exception.template.DomainException
@@ -16,9 +18,7 @@ import com.dev.app.routify.domain.extension.toFormatted
 import com.dev.app.routify.domain.gateway.NotificationGateway
 import com.dev.app.routify.domain.gateway.TokenGateway
 import com.dev.app.routify.domain.gateway.UserGateway
-import com.dev.app.routify.domain.objects.Parameter
 import com.dev.app.routify.domain.service.AuthService
-import com.dev.app.routify.domain.service.EventService
 import com.dev.app.routify.infrastructure.security.JWTAuthToken
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
@@ -33,21 +33,15 @@ import java.time.LocalDateTime
 
 @Service
 class AuthServiceImpl(
+    private val domainEventProducer: DomainEventProducer,
     private val findUserScopeUseCase: FindUserScopeUseCase,
     private val encoder: PasswordEncoder,
     private val tokenGateway: TokenGateway,
     private val notificationGateway: NotificationGateway,
-    private val eventService: EventService,
     private val userGateway: UserGateway,
     private val jwtAuthToken: JWTAuthToken
 ) : AuthService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
-    companion object {
-        private const val DEFAULT_KEY_FULL_NAME: String = "name"
-
-        private val EVENT_FORGOT_PASSWORD: EventTypeEnum = EventTypeEnum.EVENT_FORGOT_PASSWORD
-        private val DEFAULT_TYPE_NOTIFICATION: TypeNotificationEnum = TypeNotificationEnum.SEND_FORGOT_PASSWORD
-    }
 
     override fun login(
         username: String,
@@ -173,19 +167,13 @@ class AuthServiceImpl(
                 email = username
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_USER_NOT_FOUND.message)
 
-            eventService.publish(
-                EventDTO(
-                    eventType = EVENT_FORGOT_PASSWORD,
+            domainEventProducer.publish(
+                domainEventType = DomainEventTypeEnum.NOTIFICATION_EVENT,
+                message = DomainEvent(
                     domain = user,
-                    parameters = listOf(
-                        Parameter(
-                            key = DEFAULT_KEY_FULL_NAME,
-                            value = user.fullName()
-                        )
-                    )
+                    subType = SubTypeEventEnum.SUB_TYPE_RESET_CUSTOMER_PASSWORD
                 )
             )
-
             logger.info("c=AuthServiceImpl m=forgotPassword() s=done email=$username")
         } catch (ex: DomainException) {
             logger.info("c=AuthServiceImpl m=forgotPassword() s=error-domain email=$username message=${ex.message}")
@@ -210,7 +198,7 @@ class AuthServiceImpl(
 
             val notification = notificationGateway.findByUserIdAndNotificationType(
                 userId = user.identifier,
-                type = DEFAULT_TYPE_NOTIFICATION.value
+                type = TypeNotificationEnum.SEND_CUSTOMER_RESET_PASSWORD.value
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_NOTIFICATION_EMAIL_NOT_FOUND.message)
 
             val currentDate = LocalDateTime.now()

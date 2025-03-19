@@ -46,14 +46,16 @@ spring:
         default_schema: routify_db
     open-in-view: false
 
-  cloud:
-    aws:
-      region:
-        auto: false
-        static: sa-east-1
-      stack-name:
-      access-key:
-      secret-key:
+  aws:
+    region: sa-east-1
+    sqs:
+      max-number-messages: 1
+      visibility-timeout: 30000
+      await-timeout: 20
+    sns:
+      domain-events-topic: arn:aws:sns:sa-east-1:445567111880:RoufityDomainEvents
+
+
 
 management:
   endpoints:

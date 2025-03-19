@@ -1,10 +1,12 @@
 package com.dev.app.routify.application.usecase
 
 import com.dev.app.routify.application.models.ConfirmationUserDTO
-import com.dev.app.routify.application.models.EventDTO
-import com.dev.app.routify.domain.enums.EventTypeEnum
+import com.dev.app.routify.domain.enums.DomainEventTypeEnum
+import com.dev.app.routify.domain.enums.SubTypeEventEnum
 import com.dev.app.routify.domain.enums.TypeNotificationEnum
 import com.dev.app.routify.domain.enums.TypeTokenEnum
+import com.dev.app.routify.domain.event.DomainEvent
+import com.dev.app.routify.domain.event.DomainEventProducer
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GenericException
@@ -12,8 +14,6 @@ import com.dev.app.routify.domain.exception.template.InternalServerException
 import com.dev.app.routify.domain.gateway.NotificationGateway
 import com.dev.app.routify.domain.gateway.TokenGateway
 import com.dev.app.routify.domain.gateway.UserGateway
-import com.dev.app.routify.domain.objects.Parameter
-import com.dev.app.routify.domain.service.EventService
 import jakarta.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,15 +25,9 @@ class ConfirmationUserUseCase(
     private val userGateway: UserGateway,
     private val notificationGateway: NotificationGateway,
     private val tokenGateway: TokenGateway,
-    private val eventService: EventService
+    private val domainEventProducer: DomainEventProducer
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
-    companion object {
-        private const val DEFAULT_KEY_FULL_NAME: String = "name"
-        private val DEFAULT_TYPE_TOKEN: TypeTokenEnum = TypeTokenEnum.TOKEN_CONFIRMATION_ACCOUNT
-        private val DEFAULT_TYPE_NOTIFICATION: TypeNotificationEnum = TypeNotificationEnum.SEND_CONFIRMATION_ACCOUNT
-        private val DEFAULT_EVENT_WELCOME_EMAIL: EventTypeEnum = EventTypeEnum.EVENT_WELCOME_EMAIL
-    }
 
     @Transactional
     fun execute(dto: ConfirmationUserDTO) {
@@ -43,7 +37,7 @@ class ConfirmationUserUseCase(
 
             val token = tokenGateway.findByUserIdAndTokenType(
                 userId = user.identifier!!,
-                type = DEFAULT_TYPE_TOKEN.value
+                type = TypeTokenEnum.TOKEN_CONFIRMATION_ACCOUNT.value
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_TOKEN_NOT_FOUND.message)
 
             if (token.used!!) {
@@ -52,7 +46,7 @@ class ConfirmationUserUseCase(
 
             val notification = notificationGateway.findByUserIdAndNotificationType(
                 userId = user.identifier,
-                type = DEFAULT_TYPE_NOTIFICATION.value
+                type = TypeNotificationEnum.SEND_CUSTOMER_CONFIRMATION.value
             ) ?: throw DomainException(ErrorMessageEnum.ERROR_NOTIFICATION_EMAIL_NOT_FOUND.message)
 
             val currentDate = LocalDateTime.now()
@@ -79,16 +73,13 @@ class ConfirmationUserUseCase(
                 domain = notification
             )
 
-            eventService.publish(
-                EventDTO(
-                    eventType = DEFAULT_EVENT_WELCOME_EMAIL,
+            domainEventProducer.publish(
+                domainEventType = DomainEventTypeEnum.NOTIFICATION_EVENT,
+                message = DomainEvent(
                     domain = user,
-                    parameters = listOf(
-                        Parameter(key = DEFAULT_KEY_FULL_NAME, value = user.fullName())
-                    )
+                    subType = SubTypeEventEnum.SUB_TYPE_WELCOME_CUSTOMER
                 )
             )
-
             logger.info("c=ConfirmationUserUseCase m=execute() s=done email=${dto.email} hashcode=${dto.hashcode}")
         } catch (ex: DomainException) {
             logger.error("c=ConfirmationUserUseCase m=execute() s=error-domain email=${dto.email} message=${ex.message}")

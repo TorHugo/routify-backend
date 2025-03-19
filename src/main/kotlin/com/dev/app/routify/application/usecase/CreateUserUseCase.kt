@@ -2,15 +2,14 @@ package com.dev.app.routify.application.usecase
 
 import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.CreateUserDTO
-import com.dev.app.routify.application.models.EventDTO
-import com.dev.app.routify.domain.enums.EventTypeEnum
-import com.dev.app.routify.domain.enums.ScopeKeyEnum
+import com.dev.app.routify.domain.enums.DomainEventTypeEnum
+import com.dev.app.routify.domain.enums.SubTypeEventEnum
+import com.dev.app.routify.domain.event.DomainEvent
+import com.dev.app.routify.domain.event.DomainEventProducer
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.DomainException
 import com.dev.app.routify.domain.exception.template.GenericException
 import com.dev.app.routify.domain.gateway.UserGateway
-import com.dev.app.routify.domain.objects.Parameter
-import com.dev.app.routify.domain.service.EventService
 import jakarta.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,17 +18,10 @@ import java.util.*
 
 @Service
 class CreateUserUseCase(
-    private val eventService: EventService,
+    private val domainEventProducer: DomainEventProducer,
     private val userGateway: UserGateway
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
-    companion object {
-        private const val DEFAULT_SCOPE_KEY: String = "scope-user"
-        private const val DEFAULT_KEY_FULL_NAME: String = "name"
-        private val EVENT_SEND_CONFIRMATION: EventTypeEnum = EventTypeEnum.EVENT_SEND_CONFIRMATION_EMAIL_TO_USER
-        private val EVENT_USER_SCOPES: EventTypeEnum = EventTypeEnum.EVENT_USER_SCOPES
-        private val DEFAULT_SCOPE_VALUE: String = ScopeKeyEnum.DEFAULT_USER_SCOPE.value
-    }
 
     @Transactional
     fun execute(dto: CreateUserDTO): UUID {
@@ -47,26 +39,18 @@ class CreateUserUseCase(
                 domain = dto.toDomain()
             )
 
-            eventService.publish(
-                EventDTO(
-                    eventType = EVENT_SEND_CONFIRMATION,
+            domainEventProducer.publish(
+                domainEventType = DomainEventTypeEnum.NOTIFICATION_EVENT,
+                message = DomainEvent(
                     domain = save,
-                    parameters = listOf(
-                        Parameter(
-                            key = DEFAULT_KEY_FULL_NAME,
-                            value = save.fullName()
-                        )
-                    )
+                    subType = SubTypeEventEnum.SUB_TYPE_CONFIRMATION_CUSTOMER
                 )
             )
 
-            eventService.publish(
-                EventDTO(
-                    eventType = EVENT_USER_SCOPES,
-                    domain = save,
-                    parameters = listOf(
-                        Parameter(key = DEFAULT_SCOPE_KEY, value = DEFAULT_SCOPE_VALUE)
-                    )
+            domainEventProducer.publish(
+                domainEventType = DomainEventTypeEnum.ATTRIBUTE_SCOPE_EVENT,
+                message = DomainEvent(
+                    domain = save
                 )
             )
             logger.info("c=CreateUserUseCase m=execute() s=done email=${dto.email}")

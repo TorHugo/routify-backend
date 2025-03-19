@@ -61,7 +61,6 @@ class OAuthScopeFilter(
             if (!hasAccess) {
                 throw AccessDeniedException(ErrorMessageEnum.ERROR_AUTHENTICATION_ACCESS_DENIED.message)
             }
-
             logger.info("c=OAuthScopeInterceptor m=preHandle() s=done path=$path method=$method")
             return true
         } catch (ex: AccessDeniedException) {

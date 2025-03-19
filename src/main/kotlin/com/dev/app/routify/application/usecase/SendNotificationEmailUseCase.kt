@@ -2,10 +2,10 @@ package com.dev.app.routify.application.usecase
 
 import com.dev.app.routify.application.mapper.toApplicationDTO
 import com.dev.app.routify.application.models.NotificationDTO
-import com.dev.app.routify.domain.entity.SendingEmailDomain
+import com.dev.app.routify.domain.entity.PublishingEmailDomain
 import com.dev.app.routify.domain.exception.enums.ErrorMessageEnum
 import com.dev.app.routify.domain.exception.template.GenericException
-import com.dev.app.routify.domain.service.EmailService
+import com.dev.app.routify.domain.service.MailService
 import jakarta.transaction.Transactional
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class SendNotificationEmailUseCase(
-    private val emailService: EmailService
+    private val mailService: MailService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -21,12 +21,12 @@ class SendNotificationEmailUseCase(
     fun execute(dto: NotificationDTO) {
         try {
             logger.info("c=SendNotificationUseCase m=execute() s=start email=${dto.identifier}")
-            val domain = SendingEmailDomain(
+            val domain = PublishingEmailDomain(
                 to = dto.toEmail,
                 subject = dto.subject,
                 body = dto.message
             )
-            emailService.sendEmail(
+            mailService.publishEmail(
                 dto = domain.toApplicationDTO()
             )
             logger.info("c=SendNotificationUseCase m=execute() s=done email=${dto.identifier}")

@@ -25,6 +25,13 @@ enum class ErrorMessageEnum(val message: String) {
     ERROR_NOTIFICATION_PARAMETERS_IS_NOT_NULL(message = "notification.parameters.cant.be.null"),
     ERROR_NOTIFICATION_EMAIL_NOT_FOUND(message = "notification.not.found"),
 
+    // email template key error
+    ERROR_EMAIL_TEMPLATE_NOT_FOUND(message = "email.template.key.not.found"),
+    ERROR_EMAIL_TEMPLATE_ALREADY_EXISTS(message = "email.template.already.exist"),
+
+    // event error
+    ERROR_EVENT_IS_NOT_VALID(message = "event.is.not.valid"),
+
     // hashcode error
     ERROR_TOKEN_DIFFERENT_TO_SENT_USER(message = "token.different.to.sent.user"),
     ERROR_TOKEN_NOT_FOUND(message = "token.not.found"),
