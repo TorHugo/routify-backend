@@ -3,6 +3,7 @@ package com.dev.app.routify.application.usecase
 import com.dev.app.routify.application.mapper.toDomain
 import com.dev.app.routify.application.models.CreateUserDTO
 import com.dev.app.routify.domain.enums.DomainEventTypeEnum
+import com.dev.app.routify.domain.enums.ScopeKeyEnum
 import com.dev.app.routify.domain.enums.SubTypeEventEnum
 import com.dev.app.routify.domain.event.DomainEvent
 import com.dev.app.routify.domain.event.DomainEventProducer
@@ -48,9 +49,10 @@ class CreateUserUseCase(
             )
 
             domainEventProducer.publish(
-                domainEventType = DomainEventTypeEnum.ATTRIBUTE_SCOPE_EVENT,
+                domainEventType = DomainEventTypeEnum.CUSTOMER_PERMISSIONS_EVENT,
                 message = DomainEvent(
-                    domain = save
+                    domain = save,
+                    message = ScopeKeyEnum.DEFAULT_USER_SCOPE.value
                 )
             )
             logger.info("c=CreateUserUseCase m=execute() s=done email=${dto.email}")

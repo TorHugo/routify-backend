@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-@Qualifier("AttributeScopesEventTemplate")
-class AttributeScopesEventTemplate(
+@Qualifier("CustomerPermissionsEventTemplate")
+class CustomerPermissionsEventTemplate(
     override val gson: Gson,
     @Value("\${spring.aws.region}")
     override val region: String,
@@ -26,7 +26,7 @@ class AttributeScopesEventTemplate(
 
     override fun getAttributes(): MutableMap<String, MessageAttributeValue> {
         val attributes = mutableMapOf<String, MessageAttributeValue>()
-        val event = DomainEventTypeEnum.ATTRIBUTE_SCOPE_EVENT.type
+        val event = DomainEventTypeEnum.CUSTOMER_PERMISSIONS_EVENT.type
         attributes[MessageAttributeKeyEnum.TYPE.type] =
             MessageAttributeValue()
                 .withStringValue(event)
