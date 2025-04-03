@@ -1,6 +1,7 @@
 package com.dev.app.routify.infrastructure.api.controller
 
 import com.dev.app.routify.application.usecase.ConfirmationUserUseCase
+import com.dev.app.routify.application.usecase.ResendConfirmationEmailUseCase
 import com.dev.app.routify.domain.service.AuthService
 import com.dev.app.routify.infrastructure.api.mapper.toApplicationDTO
 import com.dev.app.routify.infrastructure.api.models.request.AuthLoginRequestDTO
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val confirmationUser: ConfirmationUserUseCase,
+    private val resendConfirmationEmail: ResendConfirmationEmailUseCase,
     private val encoder: PasswordEncoder
 ) {
     @PostMapping("/login")
@@ -73,6 +75,16 @@ class AuthController(
         )
     }
 
+    @PatchMapping("/resend-confirm-email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun resendConfirm(
+        @RequestHeader email: String
+    ) {
+        resendConfirmationEmail.execute(
+            email = email
+        )
+    }
+
     @PatchMapping("/confirm-email")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun confirm(
@@ -86,8 +98,6 @@ class AuthController(
             )
         )
     }
-
-    // TODO: Resend the confirmation email...
 
     @PatchMapping("/reset-password")
     @ResponseStatus(HttpStatus.NO_CONTENT)

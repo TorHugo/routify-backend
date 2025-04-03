@@ -5,7 +5,8 @@ import com.dev.app.routify.domain.exception.template.InternalServerException
 
 enum class ScopeKeyEnum(val value: String) {
     DEFAULT_USER_SCOPE(value = "DEFAULT_USER_SCOPE"),
-    DEFAULT_AUTH_SCOPE(value = "DEFAULT_AUTH_SCOPE");
+    DEFAULT_AUTH_SCOPE(value = "DEFAULT_AUTH_SCOPE"),
+    ADMIN_TEMPLATE_SCOPE(value = "ADMIN_TEMPLATE_SCOPE");
 
     companion object {
         fun findValue(value: String): ScopeKeyEnum {

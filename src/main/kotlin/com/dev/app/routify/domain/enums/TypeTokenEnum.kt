@@ -2,7 +2,7 @@ package com.dev.app.routify.domain.enums
 
 enum class TypeTokenEnum(val value: String) {
     TOKEN_CONFIRMATION_ACCOUNT(value = "TOKEN_CONFIRMATION_ACCOUNT"),
-    TOKEN_FORGOT_PASSWORD(value = "TOKEN_FORGOT_PASSWORD");
+    TOKEN_RESET_CUSTOMER_PASSWORD(value = "TOKEN_RESET_CUSTOMER_PASSWORD");
 
     companion object {
         fun isExistsValue(
