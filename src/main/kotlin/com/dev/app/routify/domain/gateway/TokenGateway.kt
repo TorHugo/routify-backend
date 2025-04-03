@@ -8,4 +8,6 @@ interface TokenGateway {
     fun findByUserIdAndTokenType(userId: Long, type: String): TokenDomain?
     fun findByUserIdAndHashToken(userId: Long, hashcode: String): TokenDomain?
     fun findByUserIdAndTokenTypeAndUsed(userId: Long, type: String, used: Boolean): TokenDomain?
+    fun findAllExpiredTokens(): List<TokenDomain?>
+    fun deleteByBatch(batch: List<TokenDomain?>)
 }

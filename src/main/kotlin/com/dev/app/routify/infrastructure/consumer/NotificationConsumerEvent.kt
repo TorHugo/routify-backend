@@ -19,7 +19,7 @@ class NotificationConsumerEvent(
 
     @SqsListener("RoutifySendNotificationQueue")
     fun subscribe(message: EventConsumerDTO) {
-        logger.info("c=NotificationEventConsumer m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
+        logger.info("c=NotificationConsumerEvent m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
         val event = gson.fromJson(message.message, DomainEvent::class.java)
         if (event.subType == null){
             throw DomainException("event.sub.type.is.mandatory.and.not.null")
@@ -27,6 +27,6 @@ class NotificationConsumerEvent(
         communicationFactory.getInstance(
             subTypeEvent = event.subType
         ).publish(event = event)
-        logger.info("c=NotificationEventConsumer m=subscribe s=Done messageId=${message.messageId} type=${message.type}")
+        logger.info("c=NotificationConsumerEvent m=subscribe s=Done messageId=${message.messageId} type=${message.type}")
     }
 }

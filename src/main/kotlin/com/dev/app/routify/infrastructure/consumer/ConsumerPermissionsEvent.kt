@@ -18,9 +18,9 @@ class ConsumerPermissionsEvent(
 ) {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    @SqsListener("CustomerPermissionQueue")
+    @SqsListener("RoutifyCustomerPermissionQueue")
     fun subscribe(message: EventConsumerDTO) {
-        logger.info("c=CustomerPermissionQueue m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
+        logger.info("c=ConsumerPermissionsEvent m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
         val event = gson.fromJson(message.message, DomainEvent::class.java)
         if (event.domain == null){
             throw DomainException("event.domain.is.mandatory.and.not.null")
@@ -35,6 +35,6 @@ class ConsumerPermissionsEvent(
             userId = user.identifier!!,
             scopeId = scope
         )
-        logger.info("c=CustomerPermissionQueue m=subscribe s=Done messageId=${message.messageId} type=${message.type}")
+        logger.info("c=ConsumerPermissionsEvent m=subscribe s=Done messageId=${message.messageId} type=${message.type}")
     }
 }

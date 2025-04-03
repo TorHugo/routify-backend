@@ -59,4 +59,17 @@ class TokenGatewayImpl(
         logger.info("c=TokenGatewayImpl m=findByUserIdAndTokenTypeAndUsed() s=done userId=$userId type=$type used=$used")
         return entity?.toDomain()
     }
+
+    override fun findAllExpiredTokens(): List<TokenDomain?> {
+        logger.info("c=TokenGatewayImpl m=findAllExpiredTokens() s=start")
+        val entities = tokenRepository.findAllExpired()
+        logger.info("c=TokenGatewayImpl m=findAllExpiredTokens() s=done")
+        return entities.map { it?.toDomain() }
+    }
+
+    override fun deleteByBatch(batch: List<TokenDomain?>) {
+        logger.info("c=TokenGatewayImpl m=deleteByBatch() s=start tokens=${batch.size}")
+        tokenRepository.deleteAllById(batch.map { it?.identifier })
+        logger.info("c=TokenGatewayImpl m=deleteByBatch() s=done tokens=${batch.size}")
+    }
 }
