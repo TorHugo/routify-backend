@@ -22,10 +22,10 @@ class ConsumerPermissionsEvent(
     fun subscribe(message: EventConsumerDTO) {
         logger.info("c=ConsumerPermissionsEvent m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
         val event = gson.fromJson(message.message, DomainEvent::class.java)
-        if (event.domain == null){
+        if (event.domain == null) {
             throw DomainException("event.domain.is.mandatory.and.not.null")
         }
-        if (event.message == null){
+        if (event.message == null) {
             throw DomainException("event.message.is.mandatory.and.not.null")
         }
         val user = gson.fromJson(event.domain.toString(), UserDomain::class.java)

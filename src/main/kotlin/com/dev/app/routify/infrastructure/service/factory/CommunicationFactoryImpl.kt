@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class CommunicationFactoryImpl(
     private val confirmedCustomerCommunicationTemplate: ConfirmedCustomerCommunicationTemplate,
     private val resetCustomerPasswordCommunicationTemplate: ResetCustomerPasswordCommunicationTemplate
-): CommunicationFactory {
+) : CommunicationFactory {
     override fun getInstance(subTypeEvent: SubTypeEventEnum): CommunicationService {
         return when (subTypeEvent) {
             SubTypeEventEnum.SUB_TYPE_CONFIRMATION_CUSTOMER -> confirmedCustomerCommunicationTemplate

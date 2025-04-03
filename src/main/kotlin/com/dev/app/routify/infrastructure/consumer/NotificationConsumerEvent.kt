@@ -21,7 +21,7 @@ class NotificationConsumerEvent(
     fun subscribe(message: EventConsumerDTO) {
         logger.info("c=NotificationConsumerEvent m=subscribe s=Start messageId=${message.messageId} type=${message.type}")
         val event = gson.fromJson(message.message, DomainEvent::class.java)
-        if (event.subType == null){
+        if (event.subType == null) {
             throw DomainException("event.sub.type.is.mandatory.and.not.null")
         }
         communicationFactory.getInstance(

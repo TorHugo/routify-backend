@@ -21,8 +21,8 @@ class ConfirmedCustomerCommunicationTemplate(
     private val createTokenUseCase: CreateTokenUseCase,
     gson: Gson,
     publisherEmailService: PublisherEmailService,
-    findEmailTemplateUseCase: FindEmailTemplateUseCase,
-): AbstractCommunicationServiceImpl(
+    findEmailTemplateUseCase: FindEmailTemplateUseCase
+) : AbstractCommunicationServiceImpl(
     gson = gson,
     publisherEmailService = publisherEmailService,
     findEmailTemplateUseCase = findEmailTemplateUseCase

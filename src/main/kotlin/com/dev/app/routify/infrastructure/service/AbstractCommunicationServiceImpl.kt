@@ -23,12 +23,12 @@ abstract class AbstractCommunicationServiceImpl(
     private val gson: Gson,
     private val publisherEmailService: PublisherEmailService,
     private val findEmailTemplateUseCase: FindEmailTemplateUseCase
-): CommunicationService {
+) : CommunicationService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     override fun publish(event: DomainEvent) {
         try {
             logger.info("c=AbstractCommunicationServiceImpl m=publish() s=Start")
-            if (event.subType == null){
+            if (event.subType == null) {
                 throw DomainException("event.sub.type.is.mandatory.and.not.null")
             }
             val template = findEmailTemplateUseCase.execute(templateKey = event.subType.emailTemplateKeyEnum.name)
@@ -65,6 +65,7 @@ abstract class AbstractCommunicationServiceImpl(
 
     /** Each template should create parameters for sending, whether it's a single message or even confirmation tokens. **/
     abstract fun buildCommunicationBody(template: EmailTemplateDTO, user: UserDomain): String
+
     /** Each template should return the specific notification type. **/
     abstract fun defineNotificationType(): String
 }
