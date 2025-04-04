@@ -57,5 +57,10 @@ enum class ErrorMessageEnum(val message: String) {
 
     // ForgotPassword error
     ERROR_FORGOT_PASSWORD_IS_EXPIRED(message = "forgot.password.is.expired"),
-    ERROR_FORGOT_PASSWORD_TOKEN_HAS_BEEN_USED(message = "forgot.password.token.has.been.used")
+    ERROR_FORGOT_PASSWORD_TOKEN_HAS_BEEN_USED(message = "forgot.password.token.has.been.used"),
+
+
+    // route error
+    ERROR_ROUTE_STATUS_IS_NOT_VALID(message = "route.status.is.not.valid"),
+    ERROR_ROUTE_USER_ALREADY_UNFINISHED_ROUTES(message = "route.user.unfinished.already.routes"),
 }

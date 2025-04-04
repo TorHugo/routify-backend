@@ -2,6 +2,7 @@ package com.dev.app.routify.application.usecase
 
 import com.dev.app.routify.application.models.ConfirmationUserDTO
 import com.dev.app.routify.domain.enums.DomainEventTypeEnum
+import com.dev.app.routify.domain.enums.ScopeKeyEnum
 import com.dev.app.routify.domain.enums.SubTypeEventEnum
 import com.dev.app.routify.domain.enums.TypeNotificationEnum
 import com.dev.app.routify.domain.enums.TypeTokenEnum
@@ -78,6 +79,14 @@ class ConfirmationUserUseCase(
                 message = DomainEvent(
                     domain = user,
                     subType = SubTypeEventEnum.SUB_TYPE_WELCOME_CUSTOMER
+                )
+            )
+
+            domainEventProducer.publish(
+                domainEventType = DomainEventTypeEnum.CUSTOMER_PERMISSIONS_EVENT,
+                message = DomainEvent(
+                    domain = user,
+                    message = ScopeKeyEnum.DEFAULT_USER_ROUTES.value
                 )
             )
             logger.info("c=ConfirmationUserUseCase m=execute() s=done email=${dto.email} hashcode=${dto.hashcode}")

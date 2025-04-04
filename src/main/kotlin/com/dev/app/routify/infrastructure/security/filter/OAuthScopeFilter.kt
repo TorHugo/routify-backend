@@ -21,12 +21,14 @@ class OAuthScopeFilter(
 ) : HandlerInterceptor {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     companion object {
+        /** TODO: Adding public routes in the new table of database. **/
         private val PUBLIC = arrayOf(
             "/api/actuator/.*",
             "/api/v1/auth/.*",
             "/api/v1/users/create"
         )
 
+        /** TODO: Adding constraints of enum. **/
         private const val DEFAULT_AUTHORIZATION_HEADER = "Authorization"
         private const val DEFAULT_AUTHORIZATION_HEADER_VALUE = "Bearer "
         private const val DEFAULT_CLAIM_SCOPE: String = "scopes"
